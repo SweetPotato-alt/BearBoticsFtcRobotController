@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 
-public class Robot extends OpMode {
+public class Robotcoding extends OpMode {
 
 
 

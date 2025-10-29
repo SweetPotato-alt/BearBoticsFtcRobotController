@@ -80,9 +80,9 @@ public class Robotcoding extends OpMode {
 
         // Arcade Drive using left joystick
 
-        float drive = -gamepad1.left_stick_y;
+        float drive = gamepad1.left_stick_y;
 
-        float turn = gamepad1.left_stick_x;
+        float turn = -gamepad1.left_stick_x;
 
 
 

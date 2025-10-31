@@ -9,52 +9,54 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class StudicaCode extends OpMode {
 
-    DcMotor left, right;
-    Servo launcher, leftIndex, rightIndex;
+    // --- Hardware ---
+    DcMotor left, right, launcher;
+    Servo feeder, index;
 
-    // Servo toggle states
+    // --- Toggle states ---
     boolean launcherActive = false;
-    boolean leftRightIndexActive = false;
+    boolean feederActive = false;
+    boolean indexActive = false;
 
-    // Button press tracking (to prevent rapid toggling)
+    // --- Button press tracking ---
     boolean aPressedLast = false;
     boolean bPressedLast = false;
+    boolean xPressedLast = false;
 
-    // Servo positions
-    double launcherOnPos = 1.0;
-    double launcherOffPos = 0.0;
+    // --- Servo positions ---
+    double feederOnPos = 1.0;
+    double feederOffPos = 0.0;
 
-    double leftIndexOnPos = 1.0;
-    double leftIndexOffPos = 0.0;
-
-    double rightIndexOnPos = 1.0;
-    double rightIndexOffPos = 0.0;
+    double indexOnPos = 1.0;
+    double indexOffPos = 0.0;
 
     @Override
     public void init() {
-        // Initialize drive motors
+        // Drive motors
         left = hardwareMap.get(DcMotor.class, "left");
-        left.setDirection(DcMotorSimple.Direction.REVERSE);
-
         right = hardwareMap.get(DcMotor.class, "right");
+        left.setDirection(DcMotorSimple.Direction.REVERSE);
         right.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        // Initialize servos
-        launcher = hardwareMap.get(Servo.class, "launcher");
-        leftIndex = hardwareMap.get(Servo.class, "leftindex");
-        rightIndex = hardwareMap.get(Servo.class, "rightindex");
+        // Launcher motor
+        launcher = hardwareMap.get(DcMotor.class, "launcher");
+        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
+        launcher.setPower(0);
 
-        // Set initial positions
-        launcher.setPosition(launcherOffPos);
-        leftIndex.setPosition(leftIndexOffPos);
-        rightIndex.setPosition(rightIndexOffPos);
+        // Servos
+        feeder = hardwareMap.get(Servo.class, "feeder");
+        index = hardwareMap.get(Servo.class, "index");
+
+        // Initial positions
+        feeder.setPosition(feederOffPos);
+        index.setPosition(indexOffPos);
 
         telemetry.addLine("Robot Initialized");
     }
 
     @Override
     public void loop() {
-        // --- DRIVE CONTROL ---
+        // --- DRIVE ---
         float drive = gamepad1.left_stick_y;
         float turn = -gamepad1.left_stick_x;
 
@@ -67,35 +69,33 @@ public class StudicaCode extends OpMode {
         left.setPower(leftPower);
         right.setPower(rightPower);
 
-        // --- LAUNCHER TOGGLE (Button A) ---
+        // --- TOGGLE LAUNCHER (Button A) ---
         if (gamepad1.a && !aPressedLast) {
-            launcherActive = !launcherActive;  // toggle state
-            if (launcherActive) {
-                launcher.setPosition(launcherOnPos);
-            } else {
-                launcher.setPosition(launcherOffPos);
-            }
+            launcherActive = !launcherActive;
+            launcher.setPower(launcherActive ? 1.0 : 0.0);
         }
         aPressedLast = gamepad1.a;
 
-        // --- INDEX TOGGLE (Button B) ---
+        // --- TOGGLE FEEDER (Button B) ---
         if (gamepad1.b && !bPressedLast) {
-            leftRightIndexActive = !leftRightIndexActive;
-            if (leftRightIndexActive) {
-                leftIndex.setPosition(leftIndexOnPos);
-                rightIndex.setPosition(rightIndexOnPos);
-            } else {
-                leftIndex.setPosition(leftIndexOffPos);
-                rightIndex.setPosition(rightIndexOffPos);
-            }
+            feederActive = !feederActive;
+            feeder.setPosition(feederActive ? feederOnPos : feederOffPos);
         }
         bPressedLast = gamepad1.b;
+
+        // --- TOGGLE INDEX (Button X) ---
+        if (gamepad1.x && !xPressedLast) {
+            indexActive = !indexActive;
+            index.setPosition(indexActive ? indexOnPos : indexOffPos);
+        }
+        xPressedLast = gamepad1.x;
 
         // --- TELEMETRY ---
         telemetry.addData("Left Power", leftPower);
         telemetry.addData("Right Power", rightPower);
-        telemetry.addData("Launcher Active", launcherActive);
-        telemetry.addData("Index Active", leftRightIndexActive);
+        telemetry.addData("Launcher", launcherActive ? "ON" : "OFF");
+        telemetry.addData("Feeder", feederActive ? "ON" : "OFF");
+        telemetry.addData("Index", indexActive ? "ON" : "OFF");
         telemetry.update();
     }
 }

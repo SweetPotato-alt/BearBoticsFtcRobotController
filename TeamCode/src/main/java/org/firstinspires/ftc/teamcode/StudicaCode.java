@@ -54,6 +54,19 @@ public class StudicaCode extends OpMode {
         telemetry.addLine("Robot Initialized");
     }
 
+    
+    @Override
+    public void start() { //make sure all motors are stopped at start
+        left.setPower(0.0);
+        right.setPower(0.0);
+        launcher.setPower(0.0);
+
+        launcherActive = false;
+        indexActive = false;
+        feederActive = false;
+    }
+
+
     @Override
     public void loop() {
         // --- DRIVE ---

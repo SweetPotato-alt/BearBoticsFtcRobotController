@@ -15,20 +15,9 @@ public class StudicaCode extends OpMode {
 
     // --- Toggle states ---
     boolean launcherActive = false;
-    boolean feederActive = false;
-    boolean indexActive = false;
 
     // --- Button press tracking ---
-    boolean aPressedLast = false;
-    boolean bPressedLast = false;
-    boolean xPressedLast = false;
-
-    // --- Servo positions ---
-    double feederOnPos = 1.0;
-    double feederOffPos = 0.0;
-
-    double indexOnPos = 1.0;
-    double indexOffPos = 0.0;
+    boolean aPressedLast = false;  // launcher toggle
 
     @Override
     public void init() {
@@ -40,38 +29,37 @@ public class StudicaCode extends OpMode {
 
         // Launcher motor
         launcher = hardwareMap.get(DcMotor.class, "launcher");
-        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
+        launcher.setDirection(DcMotorSimple.Direction.REVERSE);
         launcher.setPower(0);
 
         // Servos
-        feeder = hardwareMap.get(Servo.class, "feeder");
-        index = hardwareMap.get(Servo.class, "index");
+        feeder = hardwareMap.get(Servo.class, "feeder");  // torque servo
+        index = hardwareMap.get(Servo.class, "index");    // continuous rotation servo
 
-        // Initial positions
-        feeder.setPosition(feederOffPos);
-        index.setPosition(indexOffPos);
+        // Initial positions/power
+        feeder.setPosition(0.5);  // center start
+        index.setPosition(0.5);   // stop
 
         telemetry.addLine("Robot Initialized");
     }
 
-    
     @Override
-    public void start() { //make sure all motors are stopped at start
-        left.setPower(0.0);
-        right.setPower(0.0);
-        launcher.setPower(0.0);
+    public void start() {
+        // Stop all motors at start
+        left.setPower(0);
+        right.setPower(0);
+        launcher.setPower(0);
+        index.setPosition(0.5);
 
+        // Reset toggle states
         launcherActive = false;
-        indexActive = false;
-        feederActive = false;
     }
-
 
     @Override
     public void loop() {
-        // --- DRIVE ---
-        float drive = gamepad1.left_stick_y;
-        float turn = -gamepad1.left_stick_x;
+        // --- DRIVE (arcade) ---
+        float drive = -gamepad1.left_stick_y;
+        float turn = gamepad1.left_stick_x;
 
         float leftPower = drive + turn;
         float rightPower = drive - turn;
@@ -82,33 +70,33 @@ public class StudicaCode extends OpMode {
         left.setPower(leftPower);
         right.setPower(rightPower);
 
-        // --- TOGGLE LAUNCHER (Button A) ---
+        // --- LAUNCHER TOGGLE (Button A) ---
         if (gamepad1.a && !aPressedLast) {
             launcherActive = !launcherActive;
             launcher.setPower(launcherActive ? 1.0 : 0.0);
         }
         aPressedLast = gamepad1.a;
 
-        // --- TOGGLE FEEDER (Button B) ---
-        if (gamepad1.b && !bPressedLast) {
-            feederActive = !feederActive;
-            feeder.setPosition(feederActive ? feederOnPos : feederOffPos);
-        }
-        bPressedLast = gamepad1.b;
+        // --- FEEDER (torque servo, joystick) ---
+        double feederSpeed = gamepad1.right_stick_y; // -1 to 1
+        double currentFeederPos = feeder.getPosition();
+        double newFeederPos = currentFeederPos + feederSpeed * 0.01; // small increment per loop
+        newFeederPos = Math.max(0.0, Math.min(1.0, newFeederPos)); // clamp
+        feeder.setPosition(newFeederPos);
 
-        // --- TOGGLE INDEX (Button X) ---
-        if (gamepad1.x && !xPressedLast) {
-            indexActive = !indexActive;
-            index.setPosition(indexActive ? indexOnPos : indexOffPos);
+        // --- INDEX (continuous rotation servo, hold X to spin) ---
+        if (gamepad1.x) {
+            index.setPosition(1.0); // spin forward
+        } else {
+            index.setPosition(0.5); // stop
         }
-        xPressedLast = gamepad1.x;
 
         // --- TELEMETRY ---
         telemetry.addData("Left Power", leftPower);
         telemetry.addData("Right Power", rightPower);
         telemetry.addData("Launcher", launcherActive ? "ON" : "OFF");
-        telemetry.addData("Feeder", feederActive ? "ON" : "OFF");
-        telemetry.addData("Index", indexActive ? "ON" : "OFF");
+        telemetry.addData("Feeder Pos", feeder.getPosition());
+        telemetry.addData("Index", gamepad1.x ? "SPINNING" : "STOPPED");
         telemetry.update();
     }
 }

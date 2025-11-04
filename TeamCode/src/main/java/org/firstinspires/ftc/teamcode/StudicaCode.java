@@ -29,7 +29,7 @@ public class StudicaCode extends OpMode {
 
         // Launcher motor
         launcher = hardwareMap.get(DcMotor.class, "launcher");
-        launcher.setDirection(DcMotorSimple.Direction.REVERSE);
+        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
         launcher.setPower(0);
 
         // Servos
@@ -58,7 +58,7 @@ public class StudicaCode extends OpMode {
     @Override
     public void loop() {
         // --- DRIVE (arcade) ---
-        float drive = -gamepad1.left_stick_y;
+        float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
 
         float leftPower = drive + turn;

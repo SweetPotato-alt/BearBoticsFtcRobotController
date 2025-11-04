@@ -70,9 +70,12 @@ public class StudicaCode extends OpMode {
         }
         aPressedLast = gamepad1.a;
 
-        // --- Feeder control (right stick Y) ---
-        double feederPower = -gamepad1.right_stick_y;
-        feeder.setPower(feederPower);
+        if (gamepad1.y==true){
+            feeder.setPower(1);
+        }
+        else {
+            feeder.setPower(0);
+        }
 
         // --- Index toggle (X button) ---
         if (gamepad1.x && !xPressedLast) {
@@ -88,7 +91,7 @@ public class StudicaCode extends OpMode {
         // --- Telemetry ---
         telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);
         telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
-        telemetry.addData("Feeder Power", "%.2f", feederPower);
+        telemetry.addData("Feeder Power", "%.2f", gamepad1.y);
         telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
         telemetry.update();
     }

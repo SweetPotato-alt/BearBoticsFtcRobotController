@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 @TeleOp
@@ -13,9 +12,9 @@ public class StudicaCode extends OpMode {
     // Motors
     DcMotor left, right, launcher;
 
-    // Servos
-    Servo feeder;                // torque servo
-    CRServo leftIndex, rightIndex; // continuous rotation servos
+    // Continuous rotation servos
+    CRServo feeder;
+    CRServo leftIndex, rightIndex;
 
     // Toggle states
     boolean launcherOn = false;
@@ -38,11 +37,11 @@ public class StudicaCode extends OpMode {
         launcher.setDirection(DcMotorSimple.Direction.REVERSE);
         launcher.setPower(0);
 
-        // --- Feeder (torque servo) ---
-        feeder = hardwareMap.get(Servo.class, "feeder");
-        feeder.setPosition(0.5); // neutral start
+        // --- Feeder (CRServo) ---
+        feeder = hardwareMap.get(CRServo.class, "feeder");
+        feeder.setPower(0);
 
-        // --- Index servos (continuous rotation) ---
+        // --- Index servos (CRServo) ---
         leftIndex = hardwareMap.get(CRServo.class, "leftindex");
         rightIndex = hardwareMap.get(CRServo.class, "rightindex");
         leftIndex.setPower(0);
@@ -72,30 +71,25 @@ public class StudicaCode extends OpMode {
         aPressedLast = gamepad1.a;
 
         // --- Feeder control (right stick Y) ---
-        double feederInput = -gamepad1.right_stick_y;
-        double feederPos = feeder.getPosition() + feederInput * 0.01;
-        feederPos = Math.max(0.0, Math.min(1.0, feederPos));
-        feeder.setPosition(feederPos);
+        double feederPower = -gamepad1.right_stick_y; // push stick up to feed forward
+        feeder.setPower(feederPower);
 
         // --- Index toggle (X button) ---
         if (gamepad1.x && !xPressedLast) {
             indexActive = !indexActive;
             double power = indexActive ? 1.0 : 0.0;
 
-            // If one spins opposite, flip one sign below:
+            // If one servo spins the wrong way, flip one power
             leftIndex.setPower(power);
-            rightIndex.setPower(power);
-
-            // Example: if mirrored setup → use rightIndex.setPower(-power);
+            rightIndex.setPower(-power);
         }
         xPressedLast = gamepad1.x;
 
         // --- Telemetry ---
-        telemetry.addData("Drive", drive);
-        telemetry.addData("Turn", turn);
+        telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);
         telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
-        telemetry.addData("Feeder Pos", feeder.getPosition());
-        telemetry.addData("Index", indexActive ? "Spinning" : "Stopped");
+        telemetry.addData("Feeder Power", "%.2f", feederPower);
+        telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
         telemetry.update();
     }
 }

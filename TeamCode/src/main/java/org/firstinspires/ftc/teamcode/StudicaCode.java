@@ -70,7 +70,7 @@ public class StudicaCode extends OpMode {
         }
         aPressedLast = gamepad1.a;
 
-        if (gamepad1.y==true){
+        if (gamepad1.y){
             feeder.setPower(1);
         }
         else {
@@ -91,7 +91,6 @@ public class StudicaCode extends OpMode {
         // --- Telemetry ---
         telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);
         telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
-        telemetry.addData("Feeder Power", "%.2f", gamepad1.y);
         telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
         telemetry.update();
     }

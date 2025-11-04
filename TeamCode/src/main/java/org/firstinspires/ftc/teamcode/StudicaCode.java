@@ -71,7 +71,7 @@ public class StudicaCode extends OpMode {
         aPressedLast = gamepad1.a;
 
         // --- Feeder control (right stick Y) ---
-        double feederPower = -gamepad1.right_stick_y; // push stick up to feed forward
+        double feederPower = -gamepad1.right_stick_y;
         feeder.setPower(feederPower);
 
         // --- Index toggle (X button) ---

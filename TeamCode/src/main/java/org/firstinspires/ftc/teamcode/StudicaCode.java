@@ -83,8 +83,8 @@ public class StudicaCode extends OpMode {
             double power = indexActive ? 1.0 : 0.0;
 
             // If one servo spins the wrong way, flip one power
-            leftIndex.setPower(power);
-            rightIndex.setPower(-power);
+            leftIndex.setPower(-power);
+            rightIndex.setPower(power);
         }
         xPressedLast = gamepad1.x;
 

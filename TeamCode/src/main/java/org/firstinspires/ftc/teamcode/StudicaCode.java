@@ -34,7 +34,7 @@ public class StudicaCode extends OpMode {
 
         // --- Launcher ---
         launcher = hardwareMap.get(DcMotor.class, "launcher");
-        launcher.setDirection(DcMotorSimple.Direction.REVERSE);
+        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
         launcher.setPower(0);
 
         // --- Feeder (CRServo) ---

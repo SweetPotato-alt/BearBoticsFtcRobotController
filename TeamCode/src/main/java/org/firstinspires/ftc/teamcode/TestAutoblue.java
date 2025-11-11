@@ -66,7 +66,7 @@ public class TestAutoblue extends LinearOpMode {
             sleep(250);
             left.setPower(0.5);
             right.setPower(0.5);
-            sleep(150);
+            sleep(160);
             left.setPower(0.0);
             right.setPower(0.0);
 
@@ -74,6 +74,8 @@ public class TestAutoblue extends LinearOpMode {
             //launch
             telemetry.addLine("Launching");
             telemetry.update();
+            feeder.setPower(-1.0);
+            sleep(500);
             feeder.setPower(1.0);
             sleep(3000);
             leftindex.setPower(-1.0);
@@ -81,13 +83,7 @@ public class TestAutoblue extends LinearOpMode {
             sleep(5000);
             leftindex.setPower(0.0);
             rightindex.setPower(0.0);
-            sleep(10);
-            leftindex.setPower(0.5);
-            rightindex.setPower(-0.5);
             sleep(100);
-            leftindex.setPower(0.0);
-            rightindex.setPower(0.0);
-            sleep(10);
             leftindex.setPower(-1.0);
             rightindex.setPower(1.0);
             sleep(8000);

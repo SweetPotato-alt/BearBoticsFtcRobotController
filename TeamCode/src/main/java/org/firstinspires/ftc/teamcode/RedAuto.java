@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "Blue Auto - Backup to Wall", group = "Autonomous")
-public class Autonomousblue extends LinearOpMode {
+@Autonomous(name = "RedSide-right-AtGoal", group = "Autonomous")
+public class RedAuto extends LinearOpMode {
 
     // Declare motors
     private DcMotor left = null;
@@ -49,7 +49,7 @@ public class Autonomousblue extends LinearOpMode {
         leftindex.setPower(0);
         rightindex.setPower(0);
 
-        telemetry.addLine("Ready on BLUE side — will back up to wall");
+        telemetry.addLine("Test");
         telemetry.update();
 
         // wait for the start button
@@ -58,23 +58,35 @@ public class Autonomousblue extends LinearOpMode {
         if (opModeIsActive()) {
             //backup
             launcher.setPower(1.0);
-            sleep(500);
+            sleep(1500);
             telemetry.addLine("Backup to launching position");
             telemetry.update();
-            left.setPower(1.0);
-            right.setPower(1.0);
-            sleep(200);
+            left.setPower(0.5);
+            //right.setPower(0.5);
+            sleep(250);
+            left.setPower(0.5);
+            right.setPower(0.5);
+            sleep(160);
             left.setPower(0.0);
             right.setPower(0.0);
+
 
             //launch
             telemetry.addLine("Launching");
             telemetry.update();
-            sleep(100);
+            feeder.setPower(-1.0);
+            sleep(500);
             feeder.setPower(1.0);
+            sleep(3000);
             leftindex.setPower(-1.0);
             rightindex.setPower(1.0);
-            sleep(12000);
+            sleep(5000);
+            leftindex.setPower(0.0);
+            rightindex.setPower(0.0);
+            sleep(100);
+            leftindex.setPower(-1.0);
+            rightindex.setPower(1.0);
+            sleep(8000);
 
             leftindex.setPower(0.0);
             rightindex.setPower(0.0);
@@ -82,40 +94,26 @@ public class Autonomousblue extends LinearOpMode {
             launcher.setPower(0.0);
 
 
-            //turn
-            telemetry.addLine("Turning...");
-            telemetry.update();
-            left.setPower(0.7);
-            right.setPower(0.3);
-            sleep(2600);  // Adjust for your robot’s speed and distance
-
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
             left.setPower(1);
             right.setPower(1);
-            sleep(2900);
+            sleep(4000);
 
             //turn
             telemetry.addLine("Turning...");
             telemetry.update();
-            left.setPower(-0.5);
-            right.setPower(0.5);
-            sleep(1300);
+            left.setPower(0.5);
+            right.setPower(-0.5);
+            sleep(1500);
 
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
             left.setPower(-1);
             right.setPower(-1);
-            sleep(1500);
-
-            //turn
-            telemetry.addLine("Backing up...");
-            telemetry.update();
-            left.setPower(-0.5);
-            right.setPower(0.5);
-            sleep(1000);
+            sleep(3000);
 
             //stop
             left.setPower(0.0);

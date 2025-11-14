@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "BlueTest", group = "Autonomous")
-public class TestAutoblue extends LinearOpMode {
+@Autonomous(name = "BlueSide-left-AtGoal", group = "Autonomous")
+public class BlueAuto extends LinearOpMode {
 
     // Declare motors
     private DcMotor left = null;

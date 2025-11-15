@@ -70,12 +70,20 @@ public class StudicaCode extends OpMode {
         }
         aPressedLast = gamepad1.a;
 
-        if (gamepad1.y){
-            feeder.setPower(1);
+        //feeder
+        float feederInput = -gamepad1.right_stick_y;  // invert so pushing up = positive power
+
+        //deadzone
+        if (Math.abs(feederInput) < 0.1) {
+            feederInput = 0;
         }
-        else {
-            feeder.setPower(0);
-        }
+        feeder.setPower(feederInput);
+        //if (gamepad1.y){
+        //   feeder.setPower(1);
+        //}
+        //else {
+        //    feeder.setPower(0);
+        //}
 
         // --- Index toggle (X button) ---
         if (gamepad1.x && !xPressedLast) {

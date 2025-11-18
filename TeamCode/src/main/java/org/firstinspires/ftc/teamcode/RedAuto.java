@@ -80,13 +80,13 @@ public class RedAuto extends LinearOpMode {
             sleep(3000);
             leftindex.setPower(-1.0);
             rightindex.setPower(1.0);
-            sleep(5000);
+            sleep(1200);
             leftindex.setPower(0.0);
             rightindex.setPower(0.0);
-            sleep(100);
+            sleep(1000);
             leftindex.setPower(-1.0);
             rightindex.setPower(1.0);
-            sleep(8000);
+            sleep(10000);
 
             leftindex.setPower(0.0);
             rightindex.setPower(0.0);
@@ -106,7 +106,7 @@ public class RedAuto extends LinearOpMode {
             telemetry.update();
             left.setPower(0.5);
             right.setPower(-0.5);
-            sleep(1500);
+            sleep(1800);
 
             //backup
             telemetry.addLine("Backing up...");

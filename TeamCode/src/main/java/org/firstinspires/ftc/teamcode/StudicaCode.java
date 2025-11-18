@@ -21,7 +21,7 @@ public class StudicaCode extends OpMode {
     boolean indexActive = false;
 
     // Button press memory
-    boolean dpad_rightPressedLast = false;
+    boolean aPressedLast = false;
     boolean xPressedLast = false;
 
     @Override
@@ -68,7 +68,7 @@ public class StudicaCode extends OpMode {
             launcherOn = !launcherOn;
             launcher.setPower(launcherOn ? 1.0 : 0.0);
         }
-        dpad_rightPressedLast = gamepad1.a;
+        aPressedLast = gamepad1.a;
 
         //feeder
         float feederInput = -gamepad1.right_stick_y;  // invert so pushing up = positive power
@@ -86,7 +86,7 @@ public class StudicaCode extends OpMode {
         //}
 
         // --- Index toggle (X button) ---
-        if (gamepad1.dpad_right && !dpad_rightPressedLast) {
+        if (gamepad1.right_bumper && !xPressedLast) {
             indexActive = !indexActive;
             double power = indexActive ? 1.0 : 0.0;
 
@@ -94,7 +94,7 @@ public class StudicaCode extends OpMode {
             leftIndex.setPower(-power);
             rightIndex.setPower(power);
         }
-        xPressedLast = gamepad1.x;
+        xPressedLast = gamepad1.right_bumper;
 
         // --- Telemetry ---
         telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);

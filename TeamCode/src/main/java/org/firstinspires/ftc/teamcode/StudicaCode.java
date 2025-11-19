@@ -22,7 +22,7 @@ public class StudicaCode extends OpMode {
 
     // Button press memory
     boolean aPressedLast = false;
-    boolean xPressedLast = false;
+    //boolean xPressedLast = false;
 
     @Override
     public void init() {
@@ -86,15 +86,23 @@ public class StudicaCode extends OpMode {
         //}
 
         // --- Index toggle (X button) ---
-        if (gamepad1.right_bumper && !xPressedLast) {
-            indexActive = !indexActive;
-            double power = indexActive ? 1.0 : 0.0;
-
-            // If one servo spins the wrong way, flip one power
-            leftIndex.setPower(-power);
-            rightIndex.setPower(power);
+//        if (gamepad1.right_bumper && !xPressedLast) {
+//            indexActive = !indexActive;
+//            double power = indexActive ? 1.0 : 0.0;
+//
+//            // If one servo spins the wrong way, flip one power
+//            leftIndex.setPower(-power);
+//            rightIndex.setPower(power);
+//        }
+//        xPressedLast = gamepad1.right_bumper;
+        if (gamepad1.right_bumper){
+            leftIndex.setPower(-1.0);
+            rightIndex.setPower((1.0));
         }
-        xPressedLast = gamepad1.right_bumper;
+        else {
+            leftIndex.setPower(0.0);
+            rightIndex.setPower(0.0);
+        }
 
         // --- Telemetry ---
         telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);

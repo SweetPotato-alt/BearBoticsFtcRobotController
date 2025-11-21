@@ -49,7 +49,7 @@ public class BlueAuto extends LinearOpMode {
         leftindex.setPower(0);
         rightindex.setPower(0);
 
-        telemetry.addLine("Test");
+        telemetry.addLine("Blue Side - Ready; Press start.");
         telemetry.update();
 
         // wait for the start button

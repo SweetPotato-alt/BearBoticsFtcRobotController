@@ -39,7 +39,7 @@ public class BlueAuto extends LinearOpMode {
         //servo define
         feeder.setDirection(DcMotorSimple.Direction.FORWARD);
         leftindex.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightindex.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightindex.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //initial stop
         left.setPower(0);
@@ -86,7 +86,23 @@ public class BlueAuto extends LinearOpMode {
             sleep(1000);
             leftindex.setPower(-1.0);
             rightindex.setPower(1.0);
-            sleep(10000);
+            sleep(7000);
+
+            left.setPower(-1.0);
+            right.setPower(-1.0);
+            sleep(100);
+            left.setPower(1.0);
+            right.setPower(1.0);
+            sleep(100);
+            left.setPower(-1.0);
+            right.setPower(-1.0);
+            sleep(100);
+            left.setPower(1.0);
+            right.setPower(1.0);
+            sleep(100);
+            left.setPower(0.0);
+            right.setPower(0.0);
+            sleep(7000);
 
             leftindex.setPower(0.0);
             rightindex.setPower(0.0);
@@ -99,21 +115,21 @@ public class BlueAuto extends LinearOpMode {
             telemetry.update();
             left.setPower(1);
             right.setPower(1);
-            sleep(4000);
+            sleep(1000);
 
             //turn
             telemetry.addLine("Turning...");
             telemetry.update();
-            left.setPower(-0.5);
-            right.setPower(0.5);
-            sleep(1500);
+            left.setPower(-0.6);
+            right.setPower(0.6);
+            sleep(1400);
 
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
             left.setPower(-1);
             right.setPower(-1);
-            sleep(3000);
+            sleep(1500);
 
             //stop
             left.setPower(0.0);

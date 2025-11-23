@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "RedSide-right-AtGoal", group = "Autonomous")
-public class RedAuto extends LinearOpMode {
+@Autonomous(name = "Test", group = "Autonomous")
+public class Test extends LinearOpMode {
 
     // Declare motors
     private DcMotor left = null;
@@ -49,7 +49,7 @@ public class RedAuto extends LinearOpMode {
         leftindex.setPower(0);
         rightindex.setPower(0);
 
-        telemetry.addLine("Red Side - Ready; Press start.");
+        telemetry.addLine("Blue Side - Ready; Press start.");
         telemetry.update();
 
         // wait for the start button
@@ -57,12 +57,12 @@ public class RedAuto extends LinearOpMode {
 
         if (opModeIsActive()) {
             //backup
-            launcher.setPower(1.0);
+            //launcher.setPower(1.0);
             sleep(1500);
             telemetry.addLine("Backup to launching position");
             telemetry.update();
-            left.setPower(0.5);
-            //right.setPower(0.5);
+            //left.setPower(0);
+            right.setPower(0.5);
             sleep(250);
             left.setPower(0.5);
             right.setPower(0.5);
@@ -88,14 +88,14 @@ public class RedAuto extends LinearOpMode {
             rightindex.setPower(1.0);
             sleep(5000);
 
-            left.setPower(-0.7);
-            right.setPower(-0.7);
+            left.setPower(-1.0);
+            right.setPower(-1.0);
             sleep(100);
-            left.setPower(0.7);
-            right.setPower(0.7);
+            left.setPower(1.0);
+            right.setPower(1.0);
             sleep(100);
-            left.setPower(-0.7);
-            right.setPower(-0.7);
+            left.setPower(-1.0);
+            right.setPower(-1.0);
             sleep(100);
             left.setPower(0.7);
             right.setPower(0.7);
@@ -115,21 +115,21 @@ public class RedAuto extends LinearOpMode {
             telemetry.update();
             left.setPower(1);
             right.setPower(1);
-            sleep(1000);
+            sleep(4000);
 
             //turn
             telemetry.addLine("Turning...");
             telemetry.update();
-            left.setPower(0.5);
-            right.setPower(-0.5);
-            sleep(2000);
+            left.setPower(-0.5);
+            right.setPower(0.5);
+            sleep(1500);
 
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
             left.setPower(-1);
             right.setPower(-1);
-            sleep(1500);
+            sleep(3000);
 
             //stop
             left.setPower(0.0);

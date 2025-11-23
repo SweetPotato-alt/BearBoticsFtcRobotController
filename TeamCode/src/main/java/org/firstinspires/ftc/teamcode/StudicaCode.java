@@ -97,7 +97,7 @@ public class StudicaCode extends OpMode {
 //        xPressedLast = gamepad1.right_bumper;
         if (gamepad1.right_bumper){
             leftIndex.setPower(-1.0);
-            rightIndex.setPower((1.0));
+            rightIndex.setPower(1.0);
         }
         else {
             leftIndex.setPower(0.0);

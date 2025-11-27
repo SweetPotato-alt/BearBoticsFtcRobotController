@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous(name = "Test", group = "Autonomous")
-public class Test extends LinearOpMode {
+public class autoTest extends LinearOpMode {
 
     // Declare motors
     private DcMotor left = null;

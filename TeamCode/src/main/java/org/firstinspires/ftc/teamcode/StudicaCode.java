@@ -1,58 +1,113 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 
 @TeleOp
 public class StudicaCode extends OpMode {
 
-    // Motors
     DcMotor left, right, launcher;
-
-    // Continuous rotation servos
     CRServo feeder;
     CRServo leftIndex, rightIndex;
-
-    // Toggle states
+    DistanceSensor distance;
+    private BNO055IMU imu;
+    private DistanceSensor distSensor;
+    private Orientation angles;
     boolean launcherOn = false;
     boolean indexActive = false;
-
-    // Button press memory
     boolean aPressedLast = false;
+    private double targetAngle = 0;
+    private boolean holdAngle = false;
     //boolean xPressedLast = false;
 
     @Override
     public void init() {
-        // --- Drive motors ---
+        //drive motors
         left = hardwareMap.get(DcMotor.class, "left");
         right = hardwareMap.get(DcMotor.class, "right");
         left.setDirection(DcMotorSimple.Direction.REVERSE);
         right.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        // --- Launcher ---
+        //launcher
         launcher = hardwareMap.get(DcMotor.class, "launcher");
         launcher.setDirection(DcMotorSimple.Direction.FORWARD);
         launcher.setPower(0);
 
-        // --- Feeder (CRServo) ---
+        //feeder
         feeder = hardwareMap.get(CRServo.class, "feeder");
         feeder.setPower(0);
 
-        // --- Index servos (CRServo) ---
+        //index
         leftIndex = hardwareMap.get(CRServo.class, "leftindex");
         rightIndex = hardwareMap.get(CRServo.class, "rightindex");
         leftIndex.setPower(0);
         rightIndex.setPower(0);
+
+        //sensors
+        distance = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+
+        //Gyro
+        imu = hardwareMap.get(BNO055IMU.class, "imu"); // 名字要和配置里一致
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
+
+        imu.initialize(parameters);
+
     }
 
     @Override
     public void loop() {
-        // --- Drive control ---
+        //sensors + gyro
+        double dist = distance.getDistance(DistanceUnit.CM);
+
+        //drive control
         float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
+
+        if (!imu.isGyroCalibrated()) {
+            telemetry.addLine("IMU calibrating...");
+            telemetry.update();
+            return;
+        }
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currentAngle = angles.firstAngle;
+
+
+        if (gamepad1.y) {
+            if (!holdAngle) {
+                targetAngle = currentAngle;
+                holdAngle = true;
+            }
+
+            double error = targetAngle - currentAngle;
+            turn = (float)(0.01 * error);
+            turn = Math.max(Math.min(turn, 0.5f), -0.5f);
+
+            drive = 0.5f;
+
+            if (dist <= 25) {
+                drive = 0;
+                turn  = 0;
+            }
+        } else {
+            holdAngle = false;
+        }
 
         float leftPower = drive + turn;
         float rightPower = drive - turn;
@@ -63,7 +118,7 @@ public class StudicaCode extends OpMode {
         left.setPower(leftPower);
         right.setPower(rightPower);
 
-        // --- Launcher toggle (A button) ---
+        //Launcher toggle - a button
         if (gamepad1.a && !aPressedLast) {
             launcherOn = !launcherOn;
             launcher.setPower(launcherOn ? 1.0 : 0.0);
@@ -108,6 +163,9 @@ public class StudicaCode extends OpMode {
         telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);
         telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
         telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
+        telemetry.addData("Distance", "%.2f", dist);
+        telemetry.addData("Current Angle", currentAngle);
+        telemetry.addData("Target Angle", targetAngle);
         telemetry.update();
     }
 }

@@ -17,13 +17,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 @TeleOp
-public class StudicaCode extends OpMode {
+public class TeleopwithoutIMU extends OpMode {
 
     DcMotor left, right, launcher;
     CRServo feeder;
     CRServo leftIndex, rightIndex;
     DistanceSensor distance;
-    private BNO055IMU imu;
     private DistanceSensor distSensor;
     private Orientation angles;
     boolean launcherOn = false;
@@ -60,14 +59,6 @@ public class StudicaCode extends OpMode {
         distance = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         //Gyro
-        imu = hardwareMap.get(BNO055IMU.class, "imu"); // 名字要和配置里一致
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled = false;
-
-        imu.initialize(parameters);
 
     }
 
@@ -80,34 +71,7 @@ public class StudicaCode extends OpMode {
         float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
 
-        if (!imu.isGyroCalibrated()) {
-            telemetry.addLine("IMU calibrating...");
-            telemetry.update();
-            return;
-        }
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currentAngle = angles.firstAngle;
 
-
-        if (gamepad1.y) {
-            if (!holdAngle) {
-                targetAngle = currentAngle;
-                holdAngle = true;
-            }
-
-            double error = targetAngle - currentAngle;
-            turn = (float)(0.01 * error);
-            turn = Math.max(Math.min(turn, 0.5f), -0.5f);
-
-            drive = 0.5f;
-
-            if (dist <= 25) {
-                drive = 0;
-                turn  = 0;
-            }
-        } else {
-            holdAngle = false;
-        }
 
         float leftPower = drive + turn;
         float rightPower = drive - turn;
@@ -164,8 +128,6 @@ public class StudicaCode extends OpMode {
         telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
         telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
         telemetry.addData("Distance", "%.2f", dist);
-        telemetry.addData("Current Angle", currentAngle);
-        telemetry.addData("Target Angle", targetAngle);
         telemetry.update();
     }
 }

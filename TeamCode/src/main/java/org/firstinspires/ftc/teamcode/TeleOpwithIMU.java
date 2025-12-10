@@ -93,13 +93,13 @@ public class TeleOpwithIMU extends OpMode {
                 holdAngle = true;
             }
 
-            double error = targetAngle - currentAngle;
+            double error = (int) Math.floor(targetAngle) - Math.floor(currentAngle);
             turn = (float)(0.01 * error);
             turn = Math.max(Math.min(turn, 0.5f), -0.5f);
 
             drive = -0.5f;
 
-            if (dist <= 60) {
+            if (dist <= 80) {
                 drive = 0;
                 //turn  = 0;
             }

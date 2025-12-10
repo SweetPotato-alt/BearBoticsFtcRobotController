@@ -65,8 +65,8 @@ public class twoPlayerV2 extends LinearOpMode {
             float drive = gamepad1.left_stick_y;
             float turn = gamepad1.left_stick_x;
 
-            float leftPower = drive + turn;
-            float rightPower = drive - turn;
+            float leftPower = drive - turn;
+            float rightPower = drive + turn;
 
             leftPower = Math.max(-1.0f, Math.min(1.0f, leftPower));
             rightPower = Math.max(-1.0f, Math.min(1.0f, rightPower));
@@ -102,11 +102,14 @@ public class twoPlayerV2 extends LinearOpMode {
             }
             lastFlywheelButton = currentFlywheel;
 
-            float feederInput = -gamepad1.right_stick_y;
+            float feederInput = -gamepad2.right_stick_y;
+            if (Math.abs(feederInput) < 0.1) {
+                feederInput = 0;
+            }
             feeder.setPower(feederInput);
 
 
-            if (gamepad1.right_bumper){
+            if (gamepad2.right_bumper){
                 leftIndex.setPower(-1.0);
                 rightIndex.setPower(1.0);
             }

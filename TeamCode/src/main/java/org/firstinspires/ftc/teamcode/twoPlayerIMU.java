@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name="Two Driver TeleOP IMU", group ="TeleOP")
-public class twoPlayerIMU extends LinearOpMode {
+public class twoPlayerV2 extends LinearOpMode {
 
     //Hardware Declarations
     private DcMotor left;

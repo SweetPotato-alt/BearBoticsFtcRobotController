@@ -1,67 +1,39 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-
-
+import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name="IMU Angle Hold Test", group = "Testing")
+@TeleOp(name="IMU Angle Hold Test")
 public class IMUAngleHoldTest extends LinearOpMode {
 
-    //Hardware
-    BNO055IMU imu;
+    private IMU imu;
 
-    //Angle hold variables
-    double targetAngle = 0;
-    boolean angleHoldEnabled = false;
-
-    // IMU Setup
-    private void initIMU (){
-
-        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
-        params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(params);
-
-        telemetry.addLine("IMU Initialized");
-        telemetry.update();
-    }
-
-    //MAIN Program
     @Override
-    public void runOpMode(){
-        initIMU();
+    public void runOpMode() {
+
+        // Get IMU from config named: "imu"
+        imu = hardwareMap.get(IMU.class, "imu");
+
+        // Define Hub orientation on robot
+        RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+        );
+
+        imu.initialize(new IMU.Parameters(orientation));
+
         waitForStart();
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
 
-            Orientation orientation = imu.getAngularOrientation(
-                    AxesReference.INTRINSIC,
-                    AxesOrder.ZYX,
-                    AngleUnit.DEGREES
-            );
+            double heading = imu.getRobotYawPitchRollAngles()
+                    .getYaw(AngleUnit.DEGREES);
 
-            double currentAngle = orientation.firstAngle;
-
-            telemetry.addData("Angle", currentAngle);
-            telemetry.addData("Target", targetAngle);
-            telemetry.addData("Angle Hold", angleHoldEnabled);
+            telemetry.addData("Heading", heading);
             telemetry.update();
-
         }
     }
-
 }
-

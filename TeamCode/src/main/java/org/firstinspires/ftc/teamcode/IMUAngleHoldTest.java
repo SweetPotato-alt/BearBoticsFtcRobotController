@@ -20,7 +20,7 @@ public class IMUAngleHoldTest extends LinearOpMode {
         // Define Hub orientation on robot
         RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
         );
 
         imu.initialize(new IMU.Parameters(orientation));

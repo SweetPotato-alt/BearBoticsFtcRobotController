@@ -16,7 +16,7 @@ public class autoTest extends LinearOpMode {
 
     // Declare CRServos
     private CRServo feeder = null;
-    private CRServo leftindex = null;
+    private CRServo leftindex = null=;
     private CRServo rightindex = null;
 
     @Override

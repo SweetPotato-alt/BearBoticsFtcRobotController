@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.IMU;
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -23,7 +25,7 @@ public class TeleOpwithIMU extends OpMode {
     CRServo feeder;
     CRServo leftIndex, rightIndex;
     DistanceSensor distance;
-    private BNO055IMU imu;
+    private IMU imu;
     private DistanceSensor distSensor;
     private Orientation angles;
     boolean launcherOn = false;
@@ -38,8 +40,8 @@ public class TeleOpwithIMU extends OpMode {
         //drive motors
         left = hardwareMap.get(DcMotor.class, "left");
         right = hardwareMap.get(DcMotor.class, "right");
-        left.setDirection(DcMotorSimple.Direction.REVERSE);
-        right.setDirection(DcMotorSimple.Direction.FORWARD);
+        left.setDirection(DcMotorSimple.Direction.FORWARD);
+        right.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //launcher
         launcher = hardwareMap.get(DcMotor.class, "launcher");
@@ -60,15 +62,14 @@ public class TeleOpwithIMU extends OpMode {
         distance = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
         //Gyro
-        imu = hardwareMap.get(BNO055IMU.class, "imu"); // 名字要和配置里一致
+        imu = hardwareMap.get(IMU.class, "imu");
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        parameters.loggingEnabled = false;
+        RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+        );
 
-        imu.initialize(parameters);
+        imu.initialize(new IMU.Parameters(orientation));
 
     }
 
@@ -81,13 +82,9 @@ public class TeleOpwithIMU extends OpMode {
         float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
 
-        if (!imu.isGyroCalibrated()) {
-            telemetry.addLine("IMU calibrating...");
-            telemetry.update();
-            return;
-        }
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currentAngle = angles.firstAngle;
+
+        double angles = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double currentAngle = angles;
 
 
         if (gamepad1.y) {
@@ -100,18 +97,18 @@ public class TeleOpwithIMU extends OpMode {
             turn = (float)(0.01 * error);
             turn = Math.max(Math.min(turn, 0.5f), -0.5f);
 
-            drive = 0.5f;
+            drive = -0.5f;
 
-            if (dist <= 25) {
+            if (dist <= 60) {
                 drive = 0;
-                turn  = 0;
+                //turn  = 0;
             }
         } else {
             holdAngle = false;
         }
 
-        float leftPower = drive + turn;
-        float rightPower = drive - turn;
+        float leftPower = drive - turn;
+        float rightPower = drive + turn;
 
         leftPower = Math.max(-1.0f, Math.min(1.0f, leftPower));
         rightPower = Math.max(-1.0f, Math.min(1.0f, rightPower));

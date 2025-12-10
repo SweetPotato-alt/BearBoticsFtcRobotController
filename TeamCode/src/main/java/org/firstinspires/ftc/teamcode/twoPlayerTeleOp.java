@@ -34,7 +34,7 @@ public class twoPlayerTeleOp extends LinearOpMode {
     private boolean angleHoldEnabled = false;
 
     //Driver Variables
-    private final double PRECISION_SCALE = 0.5; //Level of parking mode motor power
+    private final double PRECISION_SCALE = 0.3; //Level of parking mode motor power
 
     //Toggle State Variables
     boolean flywheelState = false;

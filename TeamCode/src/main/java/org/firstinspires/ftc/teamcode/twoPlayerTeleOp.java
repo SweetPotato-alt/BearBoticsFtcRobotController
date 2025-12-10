@@ -27,7 +27,7 @@ public class twoPlayerTeleOp extends LinearOpMode {
     private DcMotor feeder;
     private DcMotor indexer;
 
-    private BNO055IMU imu;
+    //private BNO055IMU imu;
 
     //Angle Hold Variables
     private double targetAngle = 0;
@@ -53,13 +53,13 @@ public class twoPlayerTeleOp extends LinearOpMode {
         feeder = hardwareMap.get(DcMotor.class, "feeder");
         indexer = hardwareMap.get(DcMotor.class, "indexer");
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
-        params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        imu.initialize(params);
+        //imu = hardwareMap.get(BNO055IMU.class, "imu");
+        //BNO055IMU.Parameters params = new BNO055IMU.Parameters();
+        //params.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        //imu.initialize(params);
 
-        telemetry.addLine("IMU Initialized");
-        telemetry.update();
+        //telemetry.addLine("IMU Initialized");
+        //telemetry.update();
 
         waitForStart();
 
@@ -106,14 +106,14 @@ public class twoPlayerTeleOp extends LinearOpMode {
             }
 
             //Angle Hold Toggle (Triangle)
-            if (gamepad2.triangle){
-                if (!angleHoldEnabled) {
-                    targetAngle = getHeading();
-                    angleHoldEnabled = true;
-                }
-            } else {
-                angleHoldEnabled = false;
-            }
+            //if (gamepad2.triangle){
+            //    if (!angleHoldEnabled) {
+            //        targetAngle = getHeading();
+            //        angleHoldEnabled = true;
+            //    }
+            //} else {
+            //    angleHoldEnabled = false;
+            //}
 
             //Indexer Control (right joystick)
             double indexerPower = gamepad2.right_stick_y;
@@ -121,34 +121,34 @@ public class twoPlayerTeleOp extends LinearOpMode {
 
             //Angle Hold Logic
 
-            if (angleHoldEnabled) {
-                double currentAngle = getHeading();
-                double error = targetAngle - currentAngle;
-
-                double kP = 0.02; //proportional constant
-                double correction = error * kP;
-
-                leftMotor.setPower(leftPower + correction);
-                rightMotor.setPower(rightPower - correction);
-            }
+//            if (angleHoldEnabled) {
+//                double currentAngle = getHeading();
+//                double error = targetAngle - currentAngle;
+//
+//                double kP = 0.02; //proportional constant
+//                double correction = error * kP;
+//
+//                leftMotor.setPower(leftPower + correction);
+//                rightMotor.setPower(rightPower - correction);
+//            }
 
             //Telemetry
             telemetry.addData("Driver Mode", parkingMode ? "Precision" : "Full");
-            telemetry.addData("Current Angle", getHeading());
+            //telemetry.addData("Current Angle", getHeading());
             telemetry.addData("Target Angle", targetAngle);
             telemetry.addData("Angle Hold Enabled", angleHoldEnabled);
             telemetry.update();
         }
     }
 
-    private double getHeading(){
-        Orientation orientaion = imu.getAngularOrientation(
-                AxesReference.INTRINSIC,
-                AxesOrder.ZYX,
-                AngleUnit.DEGREES
-        );
-        return orientaion.firstAngle;
-    }
+//    private double getHeading(){
+//        Orientation orientaion = imu.getAngularOrientation(
+//                AxesReference.INTRINSIC,
+//                AxesOrder.ZYX,
+//                AngleUnit.DEGREES
+//        );
+//        return orientaion.firstAngle;
+//    }
 }
 
 

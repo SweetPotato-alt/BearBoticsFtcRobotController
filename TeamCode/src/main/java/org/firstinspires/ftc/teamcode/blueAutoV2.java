@@ -141,12 +141,13 @@ public class blueAutoV2 extends LinearOpMode {
             feeder.setPower(0.0);
             launcher.setPower(0.0);
 
-            // === STEP 3: Autonomous driving after launch ===
+            moveTicks(500, 0.1);
             // Example: Turn left 120 degrees using IMU
             turnIMU(-120, 0.4);
+            moveTicks(500, 0.1);
 
             // Example: Move forward 24 inches using encoders
-            moveStraight(24, 0.5);
+
 
             telemetry.addLine("Autonomous sequence complete");
             telemetry.update();
@@ -154,28 +155,33 @@ public class blueAutoV2 extends LinearOpMode {
     }
 
     // --- Helper: move straight using encoder counts ---
-    private void moveStraight(double inches, double power) {
-        int moveCounts = (int)(inches * COUNTS_PER_INCH);
-        int leftTarget = left.getCurrentPosition() + moveCounts;
-        int rightTarget = right.getCurrentPosition() + moveCounts;
+    // ------------------------------------------------------
+// MOVE STRAIGHT BY ENCODER TICKS
+// ------------------------------------------------------
+    private void moveTicks(int ticks, double power) {
 
-        left.setTargetPosition(leftTarget);
-        right.setTargetPosition(rightTarget);
+        int leftTarget  = left.getCurrentPosition() + ticks;
+        int rightTarget = right.getCurrentPosition() + ticks;
+
+        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        left.setTargetPosition(ticks);
+        right.setTargetPosition(ticks);
 
         left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        left.setPower(Math.abs(power));
-        right.setPower(Math.abs(power));
+        left.setPower(power);
+        right.setPower(power);
 
-        // Wait until motors reach target
+        // Wait until both motors reach target
         while (opModeIsActive() && (left.isBusy() || right.isBusy())) {
-            telemetry.addData("LeftPos", left.getCurrentPosition());
-            telemetry.addData("RightPos", right.getCurrentPosition());
+            telemetry.addData("Left Pos", left.getCurrentPosition());
+            telemetry.addData("Right Pos", right.getCurrentPosition());
             telemetry.update();
         }
 
-        // Stop motors
         left.setPower(0);
         right.setPower(0);
 
@@ -183,23 +189,26 @@ public class blueAutoV2 extends LinearOpMode {
         right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+
     // --- Helper: turn using IMU ---
-    private void turnIMU(double targetAngle, double power) {
-        double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        double desiredAngle = normalizeAngle(startAngle + targetAngle);
+    private void turnIMU(double turnAngle, double power) {
+
+        double startingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double target = normalizeAngle(startingAngle + turnAngle);
 
         while (opModeIsActive()) {
-            double currentAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            double error = normalizeAngle(desiredAngle - currentAngle);
+            double current = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            double error = normalizeAngle(target - current);
 
-            if (Math.abs(error) < 2.0) break; // stop when within 2 degrees
+            if (Math.abs(error) <= 1.5) break;
 
             double turnPower = Math.signum(error) * power;
+
             left.setPower(-turnPower);
             right.setPower(turnPower);
 
-            telemetry.addData("Current Angle", currentAngle);
-            telemetry.addData("Target Angle", desiredAngle);
+            telemetry.addData("Target", target);
+            telemetry.addData("Current", current);
             telemetry.addData("Error", error);
             telemetry.update();
         }

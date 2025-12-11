@@ -32,8 +32,8 @@ public class BlueAuto extends LinearOpMode {
         rightindex = hardwareMap.get(CRServo.class, "rightindex");
 
         //motor define
-        left.setDirection(DcMotorSimple.Direction.FORWARD);
-        right.setDirection(DcMotorSimple.Direction.REVERSE);
+        left.setDirection(DcMotorSimple.Direction.REVERSE);
+        right.setDirection(DcMotorSimple.Direction.FORWARD);
         launcher.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //servo define
@@ -61,11 +61,11 @@ public class BlueAuto extends LinearOpMode {
             sleep(1500);
             telemetry.addLine("Backup to launching position");
             telemetry.update();
-            left.setPower(0.3);
-            //right.setPower(0.5);
+            //left.setPower(0);
+            right.setPower(0.5);
             sleep(250);
-            left.setPower(0.2);
-            right.setPower(0.2);
+            left.setPower(0.5);
+            right.setPower(0.5);
             sleep(160);
             left.setPower(0.0);
             right.setPower(0.0);
@@ -88,17 +88,17 @@ public class BlueAuto extends LinearOpMode {
             rightindex.setPower(1.0);
             sleep(7000);
 
-            left.setPower(-0.2);
-            right.setPower(-0.2);
+            left.setPower(-1.0);
+            right.setPower(-1.0);
             sleep(100);
-            left.setPower(0.2);
-            right.setPower(0.2);
+            left.setPower(1.0);
+            right.setPower(1.0);
             sleep(100);
-            left.setPower(-0.2);
-            right.setPower(-0.2);
+            left.setPower(-1.0);
+            right.setPower(-1.0);
             sleep(100);
-            left.setPower(0.2);
-            right.setPower(0.2);
+            left.setPower(1.0);
+            right.setPower(1.0);
             sleep(100);
             left.setPower(0.0);
             right.setPower(0.0);
@@ -113,22 +113,22 @@ public class BlueAuto extends LinearOpMode {
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
-            left.setPower(0.3);
-            right.setPower(0.3);
+            left.setPower(1);
+            right.setPower(1);
             sleep(1000);
 
             //turn
             telemetry.addLine("Turning...");
             telemetry.update();
-            left.setPower(-0.2);
-            right.setPower(0.2);
+            left.setPower(-0.6);
+            right.setPower(0.6);
             sleep(1400);
 
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
-            left.setPower(0.3);
-            right.setPower(0.3);
+            left.setPower(-1);
+            right.setPower(-1);
             sleep(1500);
 
             //stop

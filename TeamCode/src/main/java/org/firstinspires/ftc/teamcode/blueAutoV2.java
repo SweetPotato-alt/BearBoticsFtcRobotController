@@ -79,10 +79,11 @@ public class blueAutoV2 extends LinearOpMode {
             right.setPower(0.3);
 
             // Keep moving until distance sensor reads 70cm
-            while (opModeIsActive() && distance.getDistance(DistanceUnit.CM) < 35) {
+            while (opModeIsActive() && distance.getDistance(DistanceUnit.CM) < 25) {
                 telemetry.addData("Distance to wall", distance.getDistance(DistanceUnit.CM));
                 telemetry.update();
             }
+
 
             // Stop motors
             left.setPower(0.0);
@@ -141,9 +142,11 @@ public class blueAutoV2 extends LinearOpMode {
             feeder.setPower(0.0);
             launcher.setPower(0.0);
 
+            moveStraight(2, 0.3);
+
             // === STEP 3: Autonomous driving after launch ===
             // Example: Turn left 120 degrees using IMU
-            turnIMU(-120, 0.4);
+            turnIMU(120,  0.4);
 
             // Example: Move forward 24 inches using encoders
             moveStraight(24, 0.5);

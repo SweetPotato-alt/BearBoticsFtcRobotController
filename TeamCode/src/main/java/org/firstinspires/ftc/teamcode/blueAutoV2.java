@@ -22,8 +22,8 @@ public class blueAutoV2 extends LinearOpMode {
     private IMU imu;
 
     // --- Motor and wheel constants ---
-    private static final double TICKS_PER_MOTOR_REV = 1221.6; // motor encoder ticks per rev
-    private static final double GEAR_RATIO = 50.9; // motor gearbox ratio
+    private static final double TICKS_PER_MOTOR_REV = 460.8; // motor encoder ticks per rev
+    private static final double GEAR_RATIO = 19.2; // motor gearbox ratio
     private static final double WHEEL_DIAMETER_INCH = 4.0; // wheel diameter
     private static final double COUNTS_PER_INCH = (TICKS_PER_MOTOR_REV * GEAR_RATIO) / (Math.PI * WHEEL_DIAMETER_INCH);
 
@@ -74,11 +74,12 @@ public class blueAutoV2 extends LinearOpMode {
             telemetry.update();
 
             // Set motors to move backwards slowly
+            launcher.setPower(1.0);
             left.setPower(-0.3);
             right.setPower(-0.3);
 
             // Keep moving until distance sensor reads 70cm
-            while (opModeIsActive() && distance.getDistance(DistanceUnit.CM) < 70) {
+            while (opModeIsActive() && distance.getDistance(DistanceUnit.CM) < 65) {
                 telemetry.addData("Distance to wall", distance.getDistance(DistanceUnit.CM));
                 telemetry.update();
             }
@@ -115,24 +116,24 @@ public class blueAutoV2 extends LinearOpMode {
             // Second indexer spin
             leftIndex.setPower(-1.0);
             rightIndex.setPower(1.0);
-            sleep(7000);
+            sleep(10000);
 
             // Small "wiggle" to settle robot
-            left.setPower(-1.0);
-            right.setPower(-1.0);
-            sleep(100);
-            left.setPower(1.0);
-            right.setPower(1.0);
-            sleep(100);
-            left.setPower(-1.0);
-            right.setPower(-1.0);
-            sleep(100);
-            left.setPower(1.0);
-            right.setPower(1.0);
-            sleep(100);
-            left.setPower(0.0);
-            right.setPower(0.0);
-            sleep(500);
+//            left.setPower(-1.0);
+//            right.setPower(-1.0);
+//            sleep(100);
+//            left.setPower(1.0);
+//            right.setPower(1.0);
+//            sleep(100);
+//            left.setPower(-1.0);
+//            right.setPower(-1.0);
+//            sleep(100);
+//            left.setPower(1.0);
+//            right.setPower(1.0);
+//            sleep(100);
+//            left.setPower(0.0);
+//            right.setPower(0.0);
+//            sleep(500);
 
             // Stop all servos and launcher
             leftIndex.setPower(0.0);

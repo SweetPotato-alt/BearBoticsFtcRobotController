@@ -21,7 +21,7 @@ public class TeleopwithoutIMU extends OpMode {
     DistanceSensor distance;
     private DistanceSensor distSensor;
     private Orientation angles;
-    private final double PRECISION_SCALE = 0.2;
+    private final double PRECISION_SCALE = 0.3;
     boolean parkingMode = false;
     boolean lastParking = false;
     boolean launcherOn = false;
@@ -70,13 +70,15 @@ public class TeleopwithoutIMU extends OpMode {
         float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
 
-
+        if (Math.abs(drive) < 0.05) drive = 0;
+        if (Math.abs(turn)  < 0.05) turn = 0;
 
         float leftPower = drive - turn;
         float rightPower = drive + turn;
 
         leftPower = Math.max(-1.0f, Math.min(1.0f, leftPower));
         rightPower = Math.max(-1.0f, Math.min(1.0f, rightPower));
+
 
         boolean currentParking = gamepad1.touchpad;
 
@@ -91,8 +93,8 @@ public class TeleopwithoutIMU extends OpMode {
             rightPower *= PRECISION_SCALE;
         }
 
-        left.setPower(leftPower);
-        right.setPower(rightPower);
+        left.setPower(leftPower*0.9);
+        right.setPower(rightPower*0.9);
 
         //Launcher toggle - a button
         if (gamepad1.a && !aPressedLast) {

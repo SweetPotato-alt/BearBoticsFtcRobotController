@@ -25,6 +25,9 @@ public class TeleOpwithIMU extends OpMode {
     private IMU imu;
     private DistanceSensor distSensor;
     private Orientation angles;
+    private final double PRECISION_SCALE = 0.3;
+    boolean parkingMode = false;
+    boolean lastParking = false;
     boolean launcherOn = false;
     boolean indexActive = false;
     boolean aPressedLast = false;
@@ -76,8 +79,7 @@ public class TeleOpwithIMU extends OpMode {
     //Normalizing angle hold function
     private double normalize(double angle){
         angle = angle % 360;
-        if (angle > 360) angle -= 360;
-        if (angle < 360) angle += 360;
+        if (angle < 0) angle += 360;
         return angle;
     }
 
@@ -118,6 +120,9 @@ public class TeleOpwithIMU extends OpMode {
             holdAngle = false;
         }
 
+        if (Math.abs(drive) < 0.05) drive = 0;
+        if (Math.abs(turn)  < 0.05) turn = 0;
+
         //Calculate motor power
         float leftPower = drive - turn;
         float rightPower = drive + turn;
@@ -126,9 +131,22 @@ public class TeleOpwithIMU extends OpMode {
         leftPower = Math.max(-1.0f, Math.min(1.0f, leftPower));
         rightPower = Math.max(-1.0f, Math.min(1.0f, rightPower));
 
+        boolean currentParking = gamepad1.touchpad;
+
+        if(currentParking&& !lastParking){
+            parkingMode = !parkingMode;
+        }
+
+        lastParking = currentParking;
+
+        if(parkingMode){
+            leftPower *=PRECISION_SCALE;
+            rightPower *= PRECISION_SCALE;
+        }
+
         //Send power to motors
-        left.setPower(leftPower);
-        right.setPower(rightPower);
+        left.setPower(leftPower*0.9);
+        right.setPower(rightPower*0.9);
 
         //Launcher toggle - a button
         if (gamepad1.a && !aPressedLast) {

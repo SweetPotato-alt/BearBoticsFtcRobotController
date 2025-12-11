@@ -73,6 +73,14 @@ public class TeleOpwithIMU extends OpMode {
 
     }
 
+    //Normalizing angle hold function
+    private double normalize(double angle){
+        angle = angle % 360;
+        if (angle > 360) angle -= 360;
+        if (angle < 360) angle += 360;
+        return angle;
+    }
+
     @Override
     public void loop() {
         //sensors + gyro
@@ -82,23 +90,26 @@ public class TeleOpwithIMU extends OpMode {
         float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
 
-
+        //Reads robots current yaw angle
         double angles = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double currentAngle = angles;
 
-
+        //Angle Hold Logic
         if (gamepad1.y) {
             if (!holdAngle) {
                 targetAngle = currentAngle;
                 holdAngle = true;
             }
 
-            double error = (int) Math.floor(targetAngle) - Math.floor(currentAngle);
+            //double error = (int) Math.floor(targetAngle) - Math.floor(currentAngle);
+            //Compute angular error + error to turning power
+            double error = normalize(targetAngle - currentAngle);
             turn = (float)(0.01 * error);
             turn = Math.max(Math.min(turn, 0.5f), -0.5f);
 
-            drive = -0.5f;
+            drive = -0.5f; //Drive forward while holding
 
+            //Maintain optimal distance (stops if too close)
             if (dist <= 80) {
                 drive = 0;
                 //turn  = 0;
@@ -107,12 +118,15 @@ public class TeleOpwithIMU extends OpMode {
             holdAngle = false;
         }
 
+        //Calculate motor power
         float leftPower = drive - turn;
         float rightPower = drive + turn;
 
+        //Ensures no values exceed motor limits
         leftPower = Math.max(-1.0f, Math.min(1.0f, leftPower));
         rightPower = Math.max(-1.0f, Math.min(1.0f, rightPower));
 
+        //Send power to motors
         left.setPower(leftPower);
         right.setPower(rightPower);
 

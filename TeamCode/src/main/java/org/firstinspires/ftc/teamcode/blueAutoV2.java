@@ -79,7 +79,7 @@ public class blueAutoV2 extends LinearOpMode {
             right.setPower(0.3);
 
             // Keep moving until distance sensor reads 70cm
-            while (opModeIsActive() && distance.getDistance(DistanceUnit.CM) < 65) {
+            while (opModeIsActive() && distance.getDistance(DistanceUnit.CM) < 35) {
                 telemetry.addData("Distance to wall", distance.getDistance(DistanceUnit.CM));
                 telemetry.update();
             }

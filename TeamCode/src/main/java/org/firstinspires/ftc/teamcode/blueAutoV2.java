@@ -23,9 +23,9 @@ public class blueAutoV2 extends LinearOpMode {
 
     // --- Motor and wheel constants ---
     private static final double TICKS_PER_MOTOR_REV = 460.8; // motor encoder ticks per rev
-    private static final double GEAR_RATIO = 19.2; // motor gearbox ratio
+   // private static final double GEAR_RATIO = 19.2; // motor gearbox ratio
     private static final double WHEEL_DIAMETER_INCH = 4.0; // wheel diameter
-    private static final double COUNTS_PER_INCH = (TICKS_PER_MOTOR_REV * GEAR_RATIO) / (Math.PI * WHEEL_DIAMETER_INCH);
+    private static final double COUNTS_PER_INCH = TICKS_PER_MOTOR_REV;
 
     // --- Angle hold / IMU ---
     private double targetAngle = 0;
@@ -86,6 +86,9 @@ public class blueAutoV2 extends LinearOpMode {
 
 
             // Stop motors
+            left.setPower(-0.2);
+            right.setPower(-0.2);
+            sleep(100);
             left.setPower(0.0);
             right.setPower(0.0);
             telemetry.addLine("Backup complete");
@@ -141,15 +144,16 @@ public class blueAutoV2 extends LinearOpMode {
             rightIndex.setPower(0.0);
             feeder.setPower(0.0);
             launcher.setPower(0.0);
+            sleep(1000);
 
-            moveStraight(2, 0.3);
-
-            // === STEP 3: Autonomous driving after launch ===
-            // Example: Turn left 120 degrees using IMU
-            turnIMU(120,  0.4);
-
-            // Example: Move forward 24 inches using encoders
-            moveStraight(24, 0.5);
+//            moveStraight(2, 0.1);
+//
+//            // === STEP 3: Autonomous driving after launch ===
+//            // Example: Turn left 120 degrees using IMU
+//            turnIMU(120,  0.1);
+//
+//            // Example: Move forward 24 inches using encoders
+//            moveStraight(5, 0.1);
 
             telemetry.addLine("Autonomous sequence complete");
             telemetry.update();

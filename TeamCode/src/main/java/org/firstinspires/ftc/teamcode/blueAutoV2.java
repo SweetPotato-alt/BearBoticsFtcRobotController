@@ -75,8 +75,8 @@ public class blueAutoV2 extends LinearOpMode {
 
             // Set motors to move backwards slowly
             launcher.setPower(1.0);
-            left.setPower(-0.3);
-            right.setPower(-0.3);
+            left.setPower(0.3);
+            right.setPower(0.3);
 
             // Keep moving until distance sensor reads 70cm
             while (opModeIsActive() && distance.getDistance(DistanceUnit.CM) < 65) {

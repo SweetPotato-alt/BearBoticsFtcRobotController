@@ -39,6 +39,9 @@ public class TeleOpwithIMU extends OpMode {
         right = hardwareMap.get(DcMotor.class, "right");
         left.setDirection(DcMotorSimple.Direction.FORWARD);
         right.setDirection(DcMotorSimple.Direction.REVERSE);
+        left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
 
         //launcher
         launcher = hardwareMap.get(DcMotor.class, "launcher");

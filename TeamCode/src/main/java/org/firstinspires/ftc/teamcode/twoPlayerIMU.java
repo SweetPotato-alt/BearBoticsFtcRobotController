@@ -10,9 +10,8 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name="Two Driver TeleOP with IMU", group ="TeleOP")
+@TeleOp(name="twoPlayerIMU", group ="TeleOP")
 public class twoPlayerIMU extends LinearOpMode {
 
     //Hardware

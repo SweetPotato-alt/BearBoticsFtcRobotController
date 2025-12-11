@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,9 +8,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -25,6 +21,9 @@ public class TeleopwithoutIMU extends OpMode {
     DistanceSensor distance;
     private DistanceSensor distSensor;
     private Orientation angles;
+    private final double PRECISION_SCALE = 0.2;
+    boolean parkingMode = false;
+    boolean lastParking = false;
     boolean launcherOn = false;
     boolean indexActive = false;
     boolean aPressedLast = false;
@@ -73,11 +72,24 @@ public class TeleopwithoutIMU extends OpMode {
 
 
 
-        float leftPower = drive + turn;
-        float rightPower = drive - turn;
+        float leftPower = drive - turn;
+        float rightPower = drive + turn;
 
         leftPower = Math.max(-1.0f, Math.min(1.0f, leftPower));
         rightPower = Math.max(-1.0f, Math.min(1.0f, rightPower));
+
+        boolean currentParking = gamepad1.touchpad;
+
+        if(currentParking&& !lastParking){
+            parkingMode = !parkingMode;
+        }
+
+        lastParking = currentParking;
+
+        if(parkingMode){
+            leftPower *=PRECISION_SCALE;
+            rightPower *= PRECISION_SCALE;
+        }
 
         left.setPower(leftPower);
         right.setPower(rightPower);

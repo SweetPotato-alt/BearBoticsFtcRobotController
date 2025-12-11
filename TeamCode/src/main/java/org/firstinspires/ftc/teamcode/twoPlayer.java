@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp(name="Two Driver TeleOP", group ="TeleOP")
+@TeleOp(name="twoPlayer", group ="TeleOP")
 public class twoPlayer extends LinearOpMode {
 
     //Hardware Declarations

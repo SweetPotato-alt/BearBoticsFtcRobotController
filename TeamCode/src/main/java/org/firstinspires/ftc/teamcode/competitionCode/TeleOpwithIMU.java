@@ -91,30 +91,17 @@ public class TeleOpwithIMU extends OpMode {
         float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
 
-        // Angle Hold Logic
         // Reads robot's current yaw angle
         double currentAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
+        // Angle Hold Logic
         if (gamepad1.y) {
+            // Lock in the target angle once when Y is first pressed
             if (!holdAngle) {
-                targetAngle = currentAngle;   // lock in when Y first pressed
+                targetAngle = currentAngle;
                 holdAngle = true;
             }
 
-<<<<<<< HEAD
-            // Compute error
-            double error = currentAngle - targetAngle;
-
-            // Deadband: within ±5° → no correction
-            if (Math.abs(error) > 5) {
-                // Apply correction to turn input instead of overriding motors
-                // Scale factor controls how strong correction is
-                double correction = 0.01 * error;
-                turn += correction;
-
-                // Clamp correction so it doesn’t overwhelm joystick
-                turn = (float)Math.max(Math.min(turn, 0.3), -0.3);
-=======
             //Tolerance band
             double lowerBound = targetAngle - 5;
             double upperBound = targetAngle + 5;
@@ -132,10 +119,12 @@ public class TeleOpwithIMU extends OpMode {
                 // Perfectly aligned, stop motors
                 left.setPower(turn + 0.3);
                 right.setPower(turn - 0.0);
-
             }
         } else {
+            // If Y is not pressed, reset holdAngle and stop motors
             holdAngle = false;
+            left.setPower(0.0);
+            right.setPower(0.0);
         }
 
 

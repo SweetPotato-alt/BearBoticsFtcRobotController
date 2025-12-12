@@ -101,6 +101,7 @@ public class TeleOpwithIMU extends OpMode {
                 holdAngle = true;
             }
 
+<<<<<<< HEAD
             // Compute error
             double error = currentAngle - targetAngle;
 
@@ -113,6 +114,25 @@ public class TeleOpwithIMU extends OpMode {
 
                 // Clamp correction so it doesn’t overwhelm joystick
                 turn = (float)Math.max(Math.min(turn, 0.3), -0.3);
+=======
+            //Tolerance band
+            double lowerBound = targetAngle - 5;
+            double upperBound = targetAngle + 5;
+
+            // Correction logic
+            if (currentAngle >= lowerBound && currentAngle <= upperBound) {
+                // Perfectly aligned, stop motors
+                left.setPower(0.0);
+                right.setPower(0.0);
+            } else if (currentAngle > upperBound) {
+                // Robot is right of target, turn on right motor to correct
+                right.setPower(turn + 0.3);  // adjust power as needed
+                left.setPower(turn - 0.3);
+            } else if (currentAngle > lowerBound) {
+                // Perfectly aligned, stop motors
+                left.setPower(turn + 0.3);
+                right.setPower(turn - 0.0);
+
             }
         } else {
             holdAngle = false;

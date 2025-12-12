@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.competitionCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "BlueSide-left-AtGoal", group = "Autonomous")
-public class BlueAuto extends LinearOpMode {
+@Autonomous(name = "RedSide-right-AtGoal", group = "Autonomous")
+public class RedAuto extends LinearOpMode {
 
     // Declare motors
     private DcMotor left = null;
@@ -32,8 +32,8 @@ public class BlueAuto extends LinearOpMode {
         rightindex = hardwareMap.get(CRServo.class, "rightindex");
 
         //motor define
-        left.setDirection(DcMotorSimple.Direction.FORWARD);
-        right.setDirection(DcMotorSimple.Direction.REVERSE);
+        left.setDirection(DcMotorSimple.Direction.REVERSE);
+        right.setDirection(DcMotorSimple.Direction.FORWARD);
         launcher.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //servo define
@@ -49,7 +49,7 @@ public class BlueAuto extends LinearOpMode {
         leftindex.setPower(0);
         rightindex.setPower(0);
 
-        telemetry.addLine("Blue Side - Ready; Press start.");
+        telemetry.addLine("Red Side - Ready; Press start.");
         telemetry.update();
 
         // wait for the start button
@@ -61,11 +61,11 @@ public class BlueAuto extends LinearOpMode {
             sleep(1500);
             telemetry.addLine("Backup to launching position");
             telemetry.update();
-            left.setPower(0.3);
+            left.setPower(0.5);
             //right.setPower(0.5);
             sleep(250);
-            left.setPower(0.2);
-            right.setPower(0.2);
+            left.setPower(0.5);
+            right.setPower(0.5);
             sleep(160);
             left.setPower(0.0);
             right.setPower(0.0);
@@ -86,23 +86,23 @@ public class BlueAuto extends LinearOpMode {
             sleep(1000);
             leftindex.setPower(-1.0);
             rightindex.setPower(1.0);
-            sleep(7000);
+            sleep(5000);
 
-            left.setPower(-0.2);
-            right.setPower(-0.2);
+            left.setPower(-0.7);
+            right.setPower(-0.7);
             sleep(100);
-            left.setPower(0.2);
-            right.setPower(0.2);
+            left.setPower(0.7);
+            right.setPower(0.7);
             sleep(100);
-            left.setPower(-0.2);
-            right.setPower(-0.2);
+            left.setPower(-0.7);
+            right.setPower(-0.7);
             sleep(100);
-            left.setPower(0.2);
-            right.setPower(0.2);
+            left.setPower(0.7);
+            right.setPower(0.7);
             sleep(100);
             left.setPower(0.0);
             right.setPower(0.0);
-            sleep(7000);
+            sleep(5000);
 
             leftindex.setPower(0.0);
             rightindex.setPower(0.0);
@@ -113,22 +113,22 @@ public class BlueAuto extends LinearOpMode {
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
-            left.setPower(0.3);
-            right.setPower(0.3);
+            left.setPower(1);
+            right.setPower(1);
             sleep(1000);
 
             //turn
             telemetry.addLine("Turning...");
             telemetry.update();
-            left.setPower(-0.2);
-            right.setPower(0.2);
-            sleep(1400);
+            left.setPower(0.5);
+            right.setPower(-0.5);
+            sleep(2000);
 
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
-            left.setPower(0.3);
-            right.setPower(0.3);
+            left.setPower(-1);
+            right.setPower(-1);
             sleep(1500);
 
             //stop

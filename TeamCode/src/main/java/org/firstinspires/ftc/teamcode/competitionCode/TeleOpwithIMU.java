@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.competitionCode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -25,7 +25,6 @@ public class TeleOpwithIMU extends OpMode {
     private IMU imu;
     private DistanceSensor distSensor;
     private Orientation angles;
-    private final double PRECISION_SCALE = 0.3;
     boolean parkingMode = false;
     boolean lastParking = false;
     boolean launcherOn = false;
@@ -92,36 +91,66 @@ public class TeleOpwithIMU extends OpMode {
         float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
 
-        //Reads robots current yaw angle
-        double angles = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        double currentAngle = angles;
+        // Reads robot's current yaw angle
+        double currentAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
-        //Angle Hold Logic
+        // Angle Hold Logic
         if (gamepad1.y) {
+            // Lock in the target angle once when Y is first pressed
             if (!holdAngle) {
                 targetAngle = currentAngle;
                 holdAngle = true;
             }
 
-            //double error = (int) Math.floor(targetAngle) - Math.floor(currentAngle);
-            //Compute angular error + error to turning power
-            double error = normalize(targetAngle - currentAngle);
-            turn = (float)(0.01 * error);
-            turn = Math.max(Math.min(turn, 0.5f), -0.5f);
+            // Calculate error (difference between current and target)
+            double error = currentAngle - targetAngle;
 
-            drive = -0.5f; //Drive forward while holding
-
-            //Maintain optimal distance (stops if too close)
-            if (dist <= 80) {
-                drive = 0;
-                //turn  = 0;
+            // Correction logic
+            if (error < 0) {
+                // Robot is left of target, turn on left motor to correct
+                left.setPower(0.3);   // adjust power as needed
+                right.setPower(0.0);
+            } else if (error > 0) {
+                // Robot is right of target, turn on right motor to correct
+                right.setPower(0.3);  // adjust power as needed
+                left.setPower(0.0);
+            } else {
+                // Perfectly aligned, stop motors
+                left.setPower(0.0);
+                right.setPower(0.0);
             }
         } else {
+            // If Y is not pressed, reset holdAngle and stop motors
             holdAngle = false;
+            left.setPower(0.0);
+            right.setPower(0.0);
         }
 
-        if (Math.abs(drive) < 0.05) drive = 0;
-        if (Math.abs(turn)  < 0.05) turn = 0;
+
+//            if (!holdAngle) {
+//                targetAngle = currentAngle;
+//                holdAngle = true;
+//            }
+//
+//            //double error = (int) Math.floor(targetAngle) - Math.floor(currentAngle);
+//            //Compute angular error + error to turning power
+//            double error = normalize(targetAngle - currentAngle);
+//            turn = (float)(0.01 * error);
+//            turn = Math.max(Math.min(turn, 0.5f), -0.5f);
+//
+//            drive = -0.5f; //Drive forward while holding
+//
+//            //Maintain optimal distance (stops if too close)
+//            if (dist <= 80) {
+//                drive = 0;
+//                //turn  = 0;
+//            }
+//        } else {
+//            holdAngle = false;
+//        }
+//
+//        if (Math.abs(drive) < 0.05) drive = 0;
+//        if (Math.abs(turn)  < 0.05) turn = 0;
 
         //Calculate motor power
         float leftPower = drive - turn;
@@ -140,8 +169,9 @@ public class TeleOpwithIMU extends OpMode {
         lastParking = currentParking;
 
         if(parkingMode){
-            leftPower *=PRECISION_SCALE;
-            rightPower *= PRECISION_SCALE;
+            double PRECISION_SCALE = 0.3;//Percent power of parking mode
+            leftPower *= (float) PRECISION_SCALE;
+            rightPower *= (float) PRECISION_SCALE;
         }
 
         //Send power to motors
@@ -191,6 +221,7 @@ public class TeleOpwithIMU extends OpMode {
 
         // --- Telemetry ---
         telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);
+        telemetry.addData("Drive Mode", parkingMode ? "Precision" : "Full");
         telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
         telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
         telemetry.addData("Distance", "%.2f", dist);

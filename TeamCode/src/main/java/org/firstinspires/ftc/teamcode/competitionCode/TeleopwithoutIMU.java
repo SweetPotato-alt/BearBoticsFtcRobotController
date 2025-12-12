@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.competitionCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -139,6 +139,7 @@ public class TeleopwithoutIMU extends OpMode {
 
         // --- Telemetry ---
         telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);
+        telemetry.addData("Drive Mode", parkingMode ? "Precision" : "Full");
         telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
         telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
         telemetry.addData("Distance", "%.2f", dist);

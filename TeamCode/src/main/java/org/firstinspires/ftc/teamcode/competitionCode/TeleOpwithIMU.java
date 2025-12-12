@@ -91,39 +91,31 @@ public class TeleOpwithIMU extends OpMode {
         float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
 
+        // Angle Hold Logic
         // Reads robot's current yaw angle
         double currentAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
-        // Angle Hold Logic
         if (gamepad1.y) {
-            // Lock in the target angle once when Y is first pressed
             if (!holdAngle) {
-                targetAngle = currentAngle;
+                targetAngle = currentAngle;   // lock in when Y first pressed
                 holdAngle = true;
             }
 
-            // Calculate error (difference between current and target)
+            // Compute error
             double error = currentAngle - targetAngle;
 
-            // Correction logic
-            if (error < 0) {
-                // Robot is left of target, turn on left motor to correct
-                left.setPower(0.3);   // adjust power as needed
-                right.setPower(0.0);
-            } else if (error > 0) {
-                // Robot is right of target, turn on right motor to correct
-                right.setPower(0.3);  // adjust power as needed
-                left.setPower(0.0);
-            } else {
-                // Perfectly aligned, stop motors
-                left.setPower(0.0);
-                right.setPower(0.0);
+            // Deadband: within ±5° → no correction
+            if (Math.abs(error) > 5) {
+                // Apply correction to turn input instead of overriding motors
+                // Scale factor controls how strong correction is
+                double correction = 0.01 * error;
+                turn += correction;
+
+                // Clamp correction so it doesn’t overwhelm joystick
+                turn = (float)Math.max(Math.min(turn, 0.3), -0.3);
             }
         } else {
-            // If Y is not pressed, reset holdAngle and stop motors
             holdAngle = false;
-            left.setPower(0.0);
-            right.setPower(0.0);
         }
 
 

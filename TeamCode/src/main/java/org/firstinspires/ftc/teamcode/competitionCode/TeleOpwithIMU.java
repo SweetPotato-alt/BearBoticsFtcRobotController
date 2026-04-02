@@ -76,7 +76,7 @@ public class TeleOpwithIMU extends OpMode {
     }
 
     //Normalizing angle hold function
-    private double normalize(double angle){
+    private double normalize(double angle) {
         angle = angle % 360;
         if (angle < 0) angle += 360;
         return angle;
@@ -91,41 +91,34 @@ public class TeleOpwithIMU extends OpMode {
         float drive = gamepad1.left_stick_y;
         float turn = gamepad1.left_stick_x;
 
-        // Reads robot's current yaw angle
-        double currentAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
         // Angle Hold Logic
         if (gamepad1.y) {
-            // Lock in the target angle once when Y is first pressed
-            if (!holdAngle) {
-                targetAngle = currentAngle;
-                holdAngle = true;
-            }
 
-            //Tolerance band
-            double lowerBound = targetAngle - 5;
-            double upperBound = targetAngle + 5;
+            // Reads robot's current yaw angle
+            double currentAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
-            // Correction logic
-            if (currentAngle >= lowerBound && currentAngle <= upperBound) {
-                // Perfectly aligned, stop motors
-                left.setPower(0.0);
-                right.setPower(0.0);
-            } else if (currentAngle > upperBound) {
-                // Robot is right of target, turn on right motor to correct
-                right.setPower(turn + 0.3);  // adjust power as needed
-                left.setPower(turn - 0.3);
-            } else if (currentAngle > lowerBound) {
-                // Perfectly aligned, stop motors
-                left.setPower(turn + 0.3);
-                right.setPower(turn - 0.0);
+            if (gamepad1.y) {
+                if (!holdAngle) {
+                    targetAngle = currentAngle;   // lock in when Y first pressed
+                    holdAngle = true;
+                }
+
+                // Compute error
+                double error = currentAngle - targetAngle;
+
+                // Deadband: within ±5° → no correction
+                if (Math.abs(error) > 5) {
+                    // Apply correction to turn input instead of overriding motors
+                    // Scale factor controls how strong correction is
+                    double correction = 0.01 * error;
+                    turn += correction;
+
+                    // Clamp correction so it doesn’t overwhelm joystick
+                    turn = (float) Math.max(Math.min(turn, 0.3), -0.3);
+                }
+            } else {
+                holdAngle = false;
             }
-        } else {
-            // If Y is not pressed, reset holdAngle and stop motors
-            holdAngle = false;
-            left.setPower(0.0);
-            right.setPower(0.0);
-        }
 
 
 //            if (!holdAngle) {
@@ -153,55 +146,55 @@ public class TeleOpwithIMU extends OpMode {
 //        if (Math.abs(drive) < 0.05) drive = 0;
 //        if (Math.abs(turn)  < 0.05) turn = 0;
 
-        //Calculate motor power
-        float leftPower = drive - turn;
-        float rightPower = drive + turn;
+            //Calculate motor power
+            float leftPower = drive - turn;
+            float rightPower = drive + turn;
 
-        //Ensures no values exceed motor limits
-        leftPower = Math.max(-1.0f, Math.min(1.0f, leftPower));
-        rightPower = Math.max(-1.0f, Math.min(1.0f, rightPower));
+            //Ensures no values exceed motor limits
+            leftPower = Math.max(-1.0f, Math.min(1.0f, leftPower));
+            rightPower = Math.max(-1.0f, Math.min(1.0f, rightPower));
 
-        boolean currentParking = gamepad1.touchpad;
+            boolean currentParking = gamepad1.touchpad;
 
-        if(currentParking&& !lastParking){
-            parkingMode = !parkingMode;
-        }
+            if (currentParking && !lastParking) {
+                parkingMode = !parkingMode;
+            }
 
-        lastParking = currentParking;
+            lastParking = currentParking;
 
-        if(parkingMode){
-            double PRECISION_SCALE = 0.3;//Percent power of parking mode
-            leftPower *= (float) PRECISION_SCALE;
-            rightPower *= (float) PRECISION_SCALE;
-        }
+            if (parkingMode) {
+                double PRECISION_SCALE = 0.3;//Percent power of parking mode
+                leftPower *= (float) PRECISION_SCALE;
+                rightPower *= (float) PRECISION_SCALE;
+            }
 
-        //Send power to motors
-        left.setPower(leftPower*0.9);
-        right.setPower(rightPower*0.9);
+            //Send power to motors
+            left.setPower(leftPower * 0.9);
+            right.setPower(rightPower * 0.9);
 
-        //Launcher toggle - a button
-        if (gamepad1.a && !aPressedLast) {
-            launcherOn = !launcherOn;
-            launcher.setPower(launcherOn ? 1.0 : 0.0);
-        }
-        aPressedLast = gamepad1.a;
+            //Launcher toggle - a button
+            if (gamepad1.a && !aPressedLast) {
+                launcherOn = !launcherOn;
+                launcher.setPower(launcherOn ? 1.0 : 0.0);
+            }
+            aPressedLast = gamepad1.a;
 
-        //feeder
-        float feederInput = -gamepad1.right_stick_y;  // invert so pushing up = positive power
+            //feeder
+            float feederInput = -gamepad1.right_stick_y;  // invert so pushing up = positive power
 
-        //deadzone
-        if (Math.abs(feederInput) < 0.1) {
-            feederInput = 0;
-        }
-        feeder.setPower(feederInput);
-        //if (gamepad1.y){
-        //   feeder.setPower(1);
-        //}
-        //else {
-        //    feeder.setPower(0);
-        //}
+            //deadzone
+            if (Math.abs(feederInput) < 0.1) {
+                feederInput = 0;
+            }
+            feeder.setPower(feederInput);
+            //if (gamepad1.y){
+            //   feeder.setPower(1);
+            //}
+            //else {
+            //    feeder.setPower(0);
+            //}
 
-        // --- Index toggle (X button) ---
+            // --- Index toggle (X button) ---
 //        if (gamepad1.right_bumper && !xPressedLast) {
 //            indexActive = !indexActive;
 //            double power = indexActive ? 1.0 : 0.0;
@@ -211,23 +204,23 @@ public class TeleOpwithIMU extends OpMode {
 //            rightIndex.setPower(power);
 //        }
 //        xPressedLast = gamepad1.right_bumper;
-        if (gamepad1.right_bumper){
-            leftIndex.setPower(-1.0);
-            rightIndex.setPower(1.0);
-        }
-        else {
-            leftIndex.setPower(0.0);
-            rightIndex.setPower(0.0);
-        }
+            if (gamepad1.right_bumper) {
+                leftIndex.setPower(-1.0);
+                rightIndex.setPower(1.0);
+            } else {
+                leftIndex.setPower(0.0);
+                rightIndex.setPower(0.0);
+            }
 
-        // --- Telemetry ---
-        telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);
-        telemetry.addData("Drive Mode", parkingMode ? "Precision" : "Full");
-        telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
-        telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
-        telemetry.addData("Distance", "%.2f", dist);
-        telemetry.addData("Current Angle", currentAngle);
-        telemetry.addData("Target Angle", targetAngle);
-        telemetry.update();
+            // --- Telemetry ---
+            telemetry.addData("Drive", "L: %.2f  R: %.2f", leftPower, rightPower);
+            telemetry.addData("Drive Mode", parkingMode ? "Precision" : "Full");
+            telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
+            telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
+            telemetry.addData("Distance", "%.2f", dist);
+            telemetry.addData("Current Angle", currentAngle);
+            telemetry.addData("Target Angle", targetAngle);
+            telemetry.update();
+        }
     }
 }

@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous(name="DO NOT USE", group="Autonomous")
+@Autonomous(name="BackupThenLaunchAuto", group="Autonomous")
 public class blueAutoV2 extends LinearOpMode {
 
     // --- Hardware Declarations ---

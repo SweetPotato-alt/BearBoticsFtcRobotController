@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.competitionCode;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "RED triangle", group = "Autonomous")
+@Autonomous(name = "Red Side - right - small triangle", group = "Autonomous")
 public class RedSmallTriangle extends LinearOpMode {
 
     // Declare motors
@@ -32,8 +32,8 @@ public class RedSmallTriangle extends LinearOpMode {
         rightindex = hardwareMap.get(CRServo.class, "rightindex");
 
         //motor define
-        left.setDirection(DcMotorSimple.Direction.FORWARD);
-        right.setDirection(DcMotorSimple.Direction.REVERSE);
+        left.setDirection(DcMotorSimple.Direction.REVERSE);
+        right.setDirection(DcMotorSimple.Direction.FORWARD);
         launcher.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //servo define
@@ -59,8 +59,8 @@ public class RedSmallTriangle extends LinearOpMode {
             telemetry.addLine("Backing up - outside of launch zone.");
             telemetry.update();
 
-            left.setPower(0.5);
-            right.setPower(0.5);
+            left.setPower(1.0);
+            right.setPower(1.0);
             sleep(500);
 
             left.setPower(0.0);

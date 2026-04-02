@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "BLUE", group = "Autonomous")
+@Autonomous(name = "BlueSide-left-AtGoal", group = "Autonomous")
 public class BlueAuto extends LinearOpMode {
 
     // Declare motors
@@ -66,7 +66,7 @@ public class BlueAuto extends LinearOpMode {
             sleep(250);
             left.setPower(0.2);
             right.setPower(0.2);
-            sleep(200);
+            sleep(160);
             left.setPower(0.0);
             right.setPower(0.0);
 

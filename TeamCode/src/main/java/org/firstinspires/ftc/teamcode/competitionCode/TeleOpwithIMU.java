@@ -143,8 +143,8 @@ public class TeleOpwithIMU extends OpMode {
 //            holdAngle = false;
 //        }
 //
-//        if (Math.abs(drive) < 0.05) drive = 0;
-//        if (Math.abs(turn)  < 0.05) turn = 0;
+        if (Math.abs(drive) < 0.05) drive = 0;
+        if (Math.abs(turn)  < 0.05) turn = 0;
 
             //Calculate motor power
             float leftPower = drive - turn;

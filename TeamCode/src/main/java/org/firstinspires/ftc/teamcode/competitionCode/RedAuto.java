@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "RedSide-right-AtGoal", group = "Autonomous")
+@Autonomous(name = "RED", group = "Autonomous")
 public class RedAuto extends LinearOpMode {
 
     // Declare motors
@@ -32,8 +32,8 @@ public class RedAuto extends LinearOpMode {
         rightindex = hardwareMap.get(CRServo.class, "rightindex");
 
         //motor define
-        left.setDirection(DcMotorSimple.Direction.REVERSE);
-        right.setDirection(DcMotorSimple.Direction.FORWARD);
+        left.setDirection(DcMotorSimple.Direction.FORWARD);
+        right.setDirection(DcMotorSimple.Direction.REVERSE);
         launcher.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //servo define
@@ -61,12 +61,12 @@ public class RedAuto extends LinearOpMode {
             sleep(1500);
             telemetry.addLine("Backup to launching position");
             telemetry.update();
-            left.setPower(0.5);
-            //right.setPower(0.5);
+            //left.setPower(0.5);
+            right.setPower(0.3);
             sleep(250);
-            left.setPower(0.5);
-            right.setPower(0.5);
-            sleep(160);
+            left.setPower(0.2);
+            right.setPower(0.2);
+            sleep(200);
             left.setPower(0.0);
             right.setPower(0.0);
 
@@ -86,23 +86,23 @@ public class RedAuto extends LinearOpMode {
             sleep(1000);
             leftindex.setPower(-1.0);
             rightindex.setPower(1.0);
-            sleep(5000);
+            sleep(7000);
 
-            left.setPower(-0.7);
-            right.setPower(-0.7);
+            left.setPower(-0.2);
+            right.setPower(-0.2);
             sleep(100);
-            left.setPower(0.7);
-            right.setPower(0.7);
+            left.setPower(0.2);
+            right.setPower(0.2);
             sleep(100);
-            left.setPower(-0.7);
-            right.setPower(-0.7);
+            left.setPower(-0.2);
+            right.setPower(-0.2);
             sleep(100);
-            left.setPower(0.7);
-            right.setPower(0.7);
+            left.setPower(0.2);
+            right.setPower(0.2);
             sleep(100);
             left.setPower(0.0);
             right.setPower(0.0);
-            sleep(5000);
+            sleep(7000);
 
             leftindex.setPower(0.0);
             rightindex.setPower(0.0);
@@ -113,22 +113,22 @@ public class RedAuto extends LinearOpMode {
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
-            left.setPower(1);
-            right.setPower(1);
+            left.setPower(0.3);
+            right.setPower(0.3);
             sleep(1000);
 
             //turn
             telemetry.addLine("Turning...");
             telemetry.update();
-            left.setPower(0.5);
-            right.setPower(-0.5);
+            left.setPower(0.2);
+            right.setPower(-0.2);
             sleep(2000);
 
             //backup
             telemetry.addLine("Backing up...");
             telemetry.update();
-            left.setPower(-1);
-            right.setPower(-1);
+            left.setPower(0.3);
+            right.setPower(0.3);
             sleep(1500);
 
             //stop

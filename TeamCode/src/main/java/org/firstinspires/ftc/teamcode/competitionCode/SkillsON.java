@@ -53,7 +53,6 @@ public class SkillsON extends OpMode {
 
         if (!armMode) {
             // ===== DRIVE MODE =====
-
             double y  = -gamepad1.left_stick_y;
             double x  = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
@@ -67,11 +66,13 @@ public class SkillsON extends OpMode {
                     Math.max(Math.abs(bl),
                             Math.max(Math.abs(fr), Math.abs(br))));
 
-            if (max > 1.0) {
-                fl /= max;
-                bl /= max;
-                fr /= max;
-                br /= max;
+// Scale so max is 0.5
+            if (max > 0.5) {
+                double scale = 0.5 / max;
+                fl *= scale;
+                bl *= scale;
+                fr *= scale;
+                br *= scale;
             }
 
             frontLeft.setPower(fl);

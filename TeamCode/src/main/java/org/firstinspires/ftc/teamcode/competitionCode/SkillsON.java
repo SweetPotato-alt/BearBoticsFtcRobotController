@@ -3,55 +3,115 @@ package org.firstinspires.ftc.teamcode.competitionCode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="MecanumDrive", group="TeleOp")
 public class SkillsON extends OpMode {
 
+    // Drive motors
     private DcMotor frontLeft, frontRight, backLeft, backRight;
 
-    @java.lang.Override
+    // Arm servos
+    private Servo elbow1, elbow2, wrist, hand;
+
+    // Mode control
+    private boolean armMode = false;
+    private boolean lastA = false;
+
+    // Servo positions
+    double elbowPos = 0.5;
+    double wristPos = 0.5;
+    double handPos = 0.5;
+
+    @Override
     public void init() {
-        // NOTE: Make sure these names match exactly what you have in the Robot Configuration on your Driver Hub
+
+        // Motors
         frontLeft  = hardwareMap.get(DcMotor.class, "front_left");
         frontRight = hardwareMap.get(DcMotor.class, "front_right");
         backLeft   = hardwareMap.get(DcMotor.class, "back_left");
         backRight  = hardwareMap.get(DcMotor.class, "back_right");
 
-        // Reverse one side so forward works correctly
-        // Usually, the right side is reversed, but this depends on your build
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
+
+        // Servos (names must match config)
+        elbow1 = hardwareMap.get(Servo.class, "elbow1");
+        elbow2 = hardwareMap.get(Servo.class, "elbow2");
+        wrist  = hardwareMap.get(Servo.class, "wrist");
+        hand   = hardwareMap.get(Servo.class, "hand");
     }
 
-    @java.lang.Override
+    @Override
     public void loop() {
-        // Controller inputs
-        double y  = -gamepad1.left_stick_y;   // Forward/Back
-        double x  = gamepad1.left_stick_x;    // Strafe (Left/Right)
-        double rx = gamepad1.right_stick_x;   // Rotate (Turn)
 
-        // Mecanum kinematics formulas
-        double fl = y + x + rx;
-        double bl = y - x + rx;
-        double fr = y - x - rx;
-        double br = y + x - rx;
+        // Toggle mode with A button (edge detection)
+        if (gamepad1.a && !lastA) {
+            armMode = !armMode;
+        }
+        lastA = gamepad1.a;
 
-        // Normalize so values stay between -1 and 1
-        double max = Math.max(Math.abs(fl),
-                Math.max(Math.abs(bl),
-                        Math.max(Math.abs(fr), Math.abs(br))));
+        if (!armMode) {
+            // ===== DRIVE MODE =====
 
-        if (max > 1.0) {
-            fl /= max;
-            bl /= max;
-            fr /= max;
-            br /= max;
+            double y  = -gamepad1.left_stick_y;
+            double x  = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
+
+            double fl = y + x + rx;
+            double bl = y - x + rx;
+            double fr = y - x - rx;
+            double br = y + x - rx;
+
+            double max = Math.max(Math.abs(fl),
+                    Math.max(Math.abs(bl),
+                            Math.max(Math.abs(fr), Math.abs(br))));
+
+            if (max > 1.0) {
+                fl /= max;
+                bl /= max;
+                fr /= max;
+                br /= max;
+            }
+
+            frontLeft.setPower(fl);
+            backLeft.setPower(bl);
+            frontRight.setPower(fr);
+            backRight.setPower(br);
+
+        } else {
+            // ===== ARM MODE =====
+
+            // Stop driving while using arm
+            frontLeft.setPower(0);
+            backLeft.setPower(0);
+            frontRight.setPower(0);
+            backRight.setPower(0);
+
+            // Move arm up/down (both elbows together)
+            double armInput = -gamepad1.left_stick_y * 0.01;
+
+            elbowPos += armInput;
+            elbowPos = Math.max(0, Math.min(1, elbowPos));
+
+            elbow1.setPosition(elbowPos);
+            elbow2.setPosition(elbowPos);
+
+            // Wrist control (right stick Y)
+            wristPos += -gamepad1.right_stick_y * 0.01;
+            wristPos = Math.max(0, Math.min(1, wristPos));
+            wrist.setPosition(wristPos);
+
+            // Hand open/close (D-pad)
+            if (gamepad1.dpad_left) {
+                handPos = 0.0; // open
+            }
+            if (gamepad1.dpad_right) {
+                handPos = 1.0; // close
+            }
+            hand.setPosition(handPos);
         }
 
-        // Set motor power
-        frontLeft.setPower(fl);
-        backLeft.setPower(bl);
-        frontRight.setPower(fr);
-        backRight.setPower(br);
+        telemetry.addData("Mode", armMode ? "ARM" : "DRIVE");
     }
 }

@@ -12,7 +12,7 @@ public class SkillsON extends OpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight;
 
     // Arm servos
-    private Servo elbow1, elbow2, wrist, hand;
+    private Servo elbow, wrist, hand;
 
     // Mode control
     private boolean armMode = false;
@@ -36,10 +36,9 @@ public class SkillsON extends OpMode {
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Servos (names must match config)
-        elbow1 = hardwareMap.get(Servo.class, "elbow1");
-        elbow2 = hardwareMap.get(Servo.class, "elbow2");
-        wrist  = hardwareMap.get(Servo.class, "wrist");
-        hand   = hardwareMap.get(Servo.class, "hand");
+        elbow = hardwareMap.get(Servo.class, "elbow");
+        wrist = hardwareMap.get(Servo.class, "wrist");
+        hand  = hardwareMap.get(Servo.class, "hand");
     }
 
     @Override
@@ -66,7 +65,7 @@ public class SkillsON extends OpMode {
                     Math.max(Math.abs(bl),
                             Math.max(Math.abs(fr), Math.abs(br))));
 
-// Scale so max is 0.5
+            // Scale so max is 0.5
             if (max > 0.5) {
                 double scale = 0.5 / max;
                 fl *= scale;
@@ -89,14 +88,13 @@ public class SkillsON extends OpMode {
             frontRight.setPower(0);
             backRight.setPower(0);
 
-            // Move arm up/down (both elbows together)
+            // Move arm up/down
             double armInput = -gamepad1.left_stick_y * 0.01;
 
             elbowPos += armInput;
             elbowPos = Math.max(0, Math.min(1, elbowPos));
 
-            elbow1.setPosition(elbowPos);
-            elbow2.setPosition(elbowPos);
+            elbow.setPosition(elbowPos);
 
             // Wrist control (right stick Y)
             wristPos += -gamepad1.right_stick_y * 0.01;
@@ -114,5 +112,6 @@ public class SkillsON extends OpMode {
         }
 
         telemetry.addData("Mode", armMode ? "ARM" : "DRIVE");
+        telemetry.update();
     }
 }

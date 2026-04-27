@@ -10,6 +10,9 @@ public class SkillsON extends OpMode {
 
     // Drive motors
     private DcMotor frontLeft, frontRight, backLeft, backRight;
+    
+    // Hex Motor for rotation
+    private DcMotor rotate;
 
     // Arm servos
     private Servo elbow, wrist, hand;
@@ -17,6 +20,10 @@ public class SkillsON extends OpMode {
     // Mode control
     private boolean armMode = false;
     private boolean lastA = false;
+
+    // Constants for rotation (Rev Core Hex = 288 ticks per rev)
+    final double TICKS_PER_DEGREE = 288.0 / 360.0;
+    final int POS_190 = (int)(190 * TICKS_PER_DEGREE);
 
     // Servo positions
     double elbowPos = 0.5;
@@ -32,10 +39,26 @@ public class SkillsON extends OpMode {
         backLeft   = hardwareMap.get(DcMotor.class, "back_left");
         backRight  = hardwareMap.get(DcMotor.class, "back_right");
 
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
+        // Hex Motor Initialization
+        rotate = hardwareMap.get(DcMotor.class, "rotate");
+        rotate.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rotate.setTargetPosition(0);
+        rotate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rotate.setPower(0.5);
 
-        // Servos (names must match config)
+        // Flipped directions to fix inversion
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
+
+        // Set motors to BRAKE
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Servos
         elbow = hardwareMap.get(Servo.class, "elbow");
         wrist = hardwareMap.get(Servo.class, "wrist");
         hand  = hardwareMap.get(Servo.class, "hand");
@@ -44,7 +67,7 @@ public class SkillsON extends OpMode {
     @Override
     public void loop() {
 
-        // Toggle mode with A button (edge detection)
+        // Toggle mode with A button
         if (gamepad1.a && !lastA) {
             armMode = !armMode;
         }
@@ -65,9 +88,10 @@ public class SkillsON extends OpMode {
                     Math.max(Math.abs(bl),
                             Math.max(Math.abs(fr), Math.abs(br))));
 
-            // Scale so max is 0.5
-            if (max > 0.5) {
-                double scale = 0.5 / max;
+            double maxPower = gamepad1.x ? 1.0 : 0.5;
+
+            if (max > maxPower) {
+                double scale = maxPower / max;
                 fl *= scale;
                 bl *= scale;
                 fr *= scale;
@@ -82,36 +106,51 @@ public class SkillsON extends OpMode {
         } else {
             // ===== ARM MODE =====
 
-            // Stop driving while using arm
+            // Stop driving
             frontLeft.setPower(0);
             backLeft.setPower(0);
             frontRight.setPower(0);
             backRight.setPower(0);
 
-            // Move arm up/down
-            double armInput = -gamepad1.left_stick_y * 0.01;
-
-            elbowPos += armInput;
+            // 1. Elbow Control (Left Stick Y)
+            if (Math.abs(gamepad1.left_stick_y) > 0.05) {
+                elbowPos += -gamepad1.left_stick_y * 0.01;
+            }
             elbowPos = Math.max(0, Math.min(1, elbowPos));
-
             elbow.setPosition(elbowPos);
 
-            // Wrist control (right stick Y)
-            wristPos += -gamepad1.right_stick_y * 0.01;
+            // 2. Wrist Control (Right Stick Y)
+            if (Math.abs(gamepad1.right_stick_y) > 0.05) {
+                wristPos += -gamepad1.right_stick_y * 0.01;
+            }
             wristPos = Math.max(0, Math.min(1, wristPos));
             wrist.setPosition(wristPos);
 
-            // Hand open/close (D-pad)
+            // 3. Rotation Control (D-pad)
             if (gamepad1.dpad_left) {
+                rotate.setTargetPosition(-POS_190);
+            } else if (gamepad1.dpad_right) {
+                rotate.setTargetPosition(POS_190);
+            } else if (gamepad1.dpad_down) {
+                rotate.setTargetPosition(0);
+            }
+            rotate.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rotate.setPower(0.5);
+
+            // 4. Hand Control (Bumpers)
+            if (gamepad1.left_bumper) {
                 handPos = 0.0; // open
             }
-            if (gamepad1.dpad_right) {
+            if (gamepad1.right_bumper) {
                 handPos = 1.0; // close
             }
             hand.setPosition(handPos);
         }
 
         telemetry.addData("Mode", armMode ? "ARM" : "DRIVE");
+        telemetry.addData("Rotate Pos", rotate.getCurrentPosition());
+        telemetry.addData("Elbow Pos", elbowPos);
+        telemetry.addData("Wrist Pos", wristPos);
         telemetry.update();
     }
 }

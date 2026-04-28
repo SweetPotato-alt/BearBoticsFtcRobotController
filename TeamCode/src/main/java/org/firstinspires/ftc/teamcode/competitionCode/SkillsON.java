@@ -96,9 +96,9 @@ public class SkillsON extends OpMode {
         
         // Elbow: D-pad Up/Down (Servo)
         if (gamepad1.dpad_up) {
-            elbowPos += 0.005;
+            elbowPos += 0.0005;
         } else if (gamepad1.dpad_down) {
-            elbowPos -= 0.005;
+            elbowPos -= 0.0005;
         }
         elbowPos = Math.max(0, Math.min(1, elbowPos));
         elbow.setPosition(elbowPos);
@@ -113,9 +113,9 @@ public class SkillsON extends OpMode {
 
         // Wrist: Y (Up) and A (Down)
         if (gamepad1.y) {
-            wristPos += 0.005;
+            wristPos += 0.0005;
         } else if (gamepad1.a) {
-            wristPos -= 0.005;
+            wristPos -= 0.0005;
         }
         wristPos = Math.max(0, Math.min(1, wristPos));
         wrist.setPosition(wristPos);

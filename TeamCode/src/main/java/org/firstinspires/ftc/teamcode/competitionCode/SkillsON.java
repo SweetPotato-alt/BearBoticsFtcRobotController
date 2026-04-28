@@ -11,17 +11,17 @@ public class SkillsON extends OpMode {
     // Drive motors
     private DcMotor frontLeft, frontRight, backLeft, backRight;
     
-    // Arm motors and servos
-    private DcMotor elbow, armRotation;
-    private Servo wrist, hand;
+    // Arm hardware
+    private DcMotor armRotation;
+    private Servo elbow, wrist, hand;
 
     // Servo positions
+    private double elbowPos = 0.5;
     private double wristPos = 0.5;
     private boolean handClosed = false;
     private boolean bPressedLast = false;
 
-    // Motor targets for "holding" position
-    private int elbowTarget = 0;
+    // Motor target for rotation "holding" position
     private int rotationTarget = 0;
 
     @Override
@@ -43,27 +43,22 @@ public class SkillsON extends OpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Arm Hardware
-        elbow = hardwareMap.get(DcMotor.class, "elbow");
         armRotation = hardwareMap.get(DcMotor.class, "arm_rotation");
+        elbow = hardwareMap.get(Servo.class, "elbow");
         wrist = hardwareMap.get(Servo.class, "wrist");
         hand = hardwareMap.get(Servo.class, "hand");
 
-        // Initialize motors to use encoders so they can "hold" position
-        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // Initialize rotation motor to use encoders so it can "hold" position
         armRotation.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        
-        elbow.setTargetPosition(0);
         armRotation.setTargetPosition(0);
-        
-        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armRotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        
-        // Power here sets the speed limit for reaching the target
-        elbow.setPower(0.6);
         armRotation.setPower(0.5);
-
-        elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armRotation.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        
+        // Initial Servo positions
+        elbow.setPosition(elbowPos);
+        wrist.setPosition(wristPos);
+        hand.setPosition(0.0);
     }
 
     @Override
@@ -97,17 +92,18 @@ public class SkillsON extends OpMode {
         frontRight.setPower(fr);
         backRight.setPower(br);
 
-        // ===== ARM CONTROLS (Hold Position) =====
+        // ===== ARM CONTROLS =====
         
-        // Elbow: D-pad Up/Down (changes the target position)
+        // Elbow: D-pad Up/Down (Servo)
         if (gamepad1.dpad_up) {
-            elbowTarget += 15; 
+            elbowPos += 0.005;
         } else if (gamepad1.dpad_down) {
-            elbowTarget -= 15;
+            elbowPos -= 0.005;
         }
-        elbow.setTargetPosition(elbowTarget);
+        elbowPos = Math.max(0, Math.min(1, elbowPos));
+        elbow.setPosition(elbowPos);
 
-        // Arm Rotation: D-pad Left/Right (changes the target position)
+        // Arm Rotation: D-pad Left/Right (Motor with Encoder holding)
         if (gamepad1.dpad_right) {
             rotationTarget += 15;
         } else if (gamepad1.dpad_left) {
@@ -138,7 +134,7 @@ public class SkillsON extends OpMode {
 
         telemetry.addData("Status", "Running");
         telemetry.addData("Boost Mode (X)", gamepad1.x ? "ON" : "OFF");
-        telemetry.addData("Elbow Target", elbowTarget);
+        telemetry.addData("Elbow Pos", elbowPos);
         telemetry.addData("Wrist Pos", wristPos);
         telemetry.addData("Hand", handClosed ? "CLOSED" : "OPEN");
         telemetry.update();

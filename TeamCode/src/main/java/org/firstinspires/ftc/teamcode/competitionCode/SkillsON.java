@@ -99,9 +99,9 @@ public class SkillsON extends OpMode {
 
         // Arm Rotation: HOLD = move, RELEASE = stop instantly
         if (gamepad1.dpad_right) {
-            armRotation.setPower(0.5);
+            armRotation.setPower(0.1);
         } else if (gamepad1.dpad_left) {
-            armRotation.setPower(-0.5);
+            armRotation.setPower(-0.1);
         } else {
             armRotation.setPower(0); // immediate stop
         }

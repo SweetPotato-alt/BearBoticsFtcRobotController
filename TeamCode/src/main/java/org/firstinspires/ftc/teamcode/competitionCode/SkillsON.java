@@ -100,19 +100,19 @@ public class SkillsON extends OpMode {
 
         // Elbow: D-pad Up/Down
         if (gamepad1.dpad_up) {
-            elbowPos += 0.0005;
+            elbowPos += 0.001;
         } else if (gamepad1.dpad_down) {
-            elbowPos -= 0.0005;
+            elbowPos -= 0.001;
         }
         elbowPos = Math.max(0, Math.min(1, elbowPos));
         elbow.setPosition(elbowPos);
 
         // Arm Rotation: D-pad Left/Right (ONE CLICK per press)
         if (gamepad1.dpad_right && !dpadRightLast) {
-            rotationTarget += 15;
+            rotationTarget += 10;
         }
         if (gamepad1.dpad_left && !dpadLeftLast) {
-            rotationTarget -= 15;
+            rotationTarget -= 10;
         }
 
         dpadRightLast = gamepad1.dpad_right;
@@ -122,9 +122,9 @@ public class SkillsON extends OpMode {
 
         // Wrist: A (down), X (up)  <-- moved to avoid conflict with Y
         if (gamepad1.x) {
-            wristPos += 0.0005;
+            wristPos += 0.001;
         } else if (gamepad1.a) {
-            wristPos -= 0.0005;
+            wristPos -= 0.001;
         }
         wristPos = Math.max(0, Math.min(1, wristPos));
         wrist.setPosition(wristPos);

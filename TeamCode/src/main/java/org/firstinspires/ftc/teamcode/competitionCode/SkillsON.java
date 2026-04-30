@@ -11,6 +11,7 @@ public class SkillsON extends OpMode {
     // Drive motors
     private DcMotor frontLeft, frontRight, backLeft, backRight;
     
+
     // Arm hardware
     private DcMotor armRotation;
     private Servo elbow, wrist, hand;
@@ -18,11 +19,6 @@ public class SkillsON extends OpMode {
     // Servo positions
     private double elbowPos = 0.5;
     private double wristPos = 0.5;
-    private boolean handClosed = false;
-    private boolean bPressedLast = false;
-
-    // Motor target for rotation "holding" position
-    private int rotationTarget = 0;
 
     @Override
     public void init() {
@@ -48,21 +44,20 @@ public class SkillsON extends OpMode {
         wrist = hardwareMap.get(Servo.class, "wrist");
         hand = hardwareMap.get(Servo.class, "hand");
 
-        // Initialize rotation motor to use encoders so it can "hold" position
-        armRotation.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armRotation.setTargetPosition(0);
-        armRotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armRotation.setPower(0.5);
+        // IMPORTANT: switch to manual control mode
+        armRotation.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armRotation.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         
+
         // Initial Servo positions
         elbow.setPosition(elbowPos);
         wrist.setPosition(wristPos);
-        hand.setPosition(0.0);
+        hand.setPosition(0.0); // open
     }
 
     @Override
     public void loop() {
+
         // ===== DRIVE MODE =====
         double y  = -gamepad1.left_stick_y;
         double x  = gamepad1.left_stick_x;
@@ -77,7 +72,12 @@ public class SkillsON extends OpMode {
                 Math.max(Math.abs(bl),
                         Math.max(Math.abs(fr), Math.abs(br))));
 
+<<<<<<< HEAD
         double maxPower = (gamepad1.x || gamepad1.right_trigger > 0.5) ? 1.0 : 0.5;
+=======
+        // 25% normal speed, 100% when holding right trigger
+        double maxPower = gamepad1.right_trigger > 0.1 ? 1.0 : 0.25;
+>>>>>>> e5e3d1fb172ac95ea94abd44b9920fec9fdcb349
 
         if (max > maxPower) {
             double scale = maxPower / max;
@@ -95,48 +95,61 @@ public class SkillsON extends OpMode {
         // ===== ARM CONTROLS =====
         
         // Elbow: D-pad Up/Down (Servo)
+
+        // Elbow: D-pad Up/Down
         if (gamepad1.dpad_up) {
             elbowPos += 0.0005;
+            elbowPos += 0.001;
         } else if (gamepad1.dpad_down) {
             elbowPos -= 0.0005;
+            elbowPos -= 0.001;
         }
         elbowPos = Math.max(0, Math.min(1, elbowPos));
         elbow.setPosition(elbowPos);
 
         // Arm Rotation: D-pad Left/Right (Motor with Encoder holding)
+        // Arm Rotation: HOLD = move, RELEASE = stop instantly
         if (gamepad1.dpad_right) {
             rotationTarget += 15;
+            armRotation.setPower(0.1);
         } else if (gamepad1.dpad_left) {
-            rotationTarget -= 15;
+            armRotation.setPower(-0.1);
+        } else {
+            armRotation.setPower(0); // immediate stop
         }
-        armRotation.setTargetPosition(rotationTarget);
 
         // Wrist: Y (Up) and A (Down)
         if (gamepad1.y) {
             wristPos += 0.0005;
+        // Wrist: X (up), A (down)
+        if (gamepad1.x) {
+            wristPos += 0.001;
         } else if (gamepad1.a) {
             wristPos -= 0.0005;
+            wristPos -= 0.001;
         }
         wristPos = Math.max(0, Math.min(1, wristPos));
         wrist.setPosition(wristPos);
 
-        // Hand: B (Toggle Close/Open)
-        if (gamepad1.b && !bPressedLast) {
-            handClosed = !handClosed;
-        }
-        bPressedLast = gamepad1.b;
-
-        if (handClosed) {
-            hand.setPosition(1.0); // Closed
-        } else {
+        // Hand: Y = OPEN, B = CLOSE
+        if (gamepad1.y) {
             hand.setPosition(0.0); // Open
         }
+        if (gamepad1.b) {
+            hand.setPosition(1.0); // Close
+        }
 
+        // Telemetry
         telemetry.addData("Status", "Running");
+<<<<<<< HEAD
         telemetry.addData("Boost Mode (X/RT)", (gamepad1.x || gamepad1.right_trigger > 0.5) ? "ON" : "OFF");
+=======
+        telemetry.addData("Speed Mode", gamepad1.right_trigger > 0.1 ? "BOOST" : "NORMAL");
+>>>>>>> e5e3d1fb172ac95ea94abd44b9920fec9fdcb349
         telemetry.addData("Elbow Pos", elbowPos);
         telemetry.addData("Wrist Pos", wristPos);
         telemetry.addData("Hand", handClosed ? "CLOSED" : "OPEN");
+        telemetry.addData("Arm Power", armRotation.getPower());
         telemetry.update();
     }
 }

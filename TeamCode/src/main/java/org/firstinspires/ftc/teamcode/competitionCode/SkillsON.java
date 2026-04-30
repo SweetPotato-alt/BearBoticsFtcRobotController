@@ -50,7 +50,7 @@ public class SkillsON extends OpMode {
         // Initial Servo positions
         elbow.setPosition(elbowPos);
         wrist.setPosition(wristPos);
-        hand.setPosition(0.0); // open
+        hand.setPosition(1.0); // closed
     }
 
     @Override
@@ -70,12 +70,10 @@ public class SkillsON extends OpMode {
                 Math.max(Math.abs(bl),
                         Math.max(Math.abs(fr), Math.abs(br))));
 
-<<<<<<< HEAD
-        double maxPower = (gamepad1.x || gamepad1.right_trigger > 0.5) ? 1.0 : 0.5;
-=======
+
         // 25% normal speed, 100% when holding right trigger
         double maxPower = gamepad1.right_trigger > 0.1 ? 1.0 : 0.25;
->>>>>>> e5e3d1fb172ac95ea94abd44b9920fec9fdcb349
+
 
         if (max > maxPower) {
             double scale = maxPower / max;
@@ -129,11 +127,7 @@ public class SkillsON extends OpMode {
 
         // Telemetry
         telemetry.addData("Status", "Running");
-<<<<<<< HEAD
-        telemetry.addData("Boost Mode (X/RT)", (gamepad1.x || gamepad1.right_trigger > 0.5) ? "ON" : "OFF");
-=======
         telemetry.addData("Speed Mode", gamepad1.right_trigger > 0.1 ? "BOOST" : "NORMAL");
->>>>>>> e5e3d1fb172ac95ea94abd44b9920fec9fdcb349
         telemetry.addData("Elbow Pos", elbowPos);
         telemetry.addData("Wrist Pos", wristPos);
         telemetry.addData("Arm Power", armRotation.getPower());

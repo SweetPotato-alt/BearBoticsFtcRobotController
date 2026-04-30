@@ -93,36 +93,36 @@ public class SkillsON extends OpMode {
 
         // Elbow: D-pad Up/Down
         if (gamepad1.dpad_up) {
-            elbowPos += 0.005;
+            elbowPos += 0.0025;
         } else if (gamepad1.dpad_down) {
-            elbowPos -= 0.005;
+            elbowPos -= 0.0025;
         }
         elbowPos = Math.max(0, Math.min(1, elbowPos));
         elbow.setPosition(elbowPos);
 
         // Arm Rotation: HOLD = move, RELEASE = stop instantly
         if (gamepad1.dpad_right) {
-            armRotation.setPower(0.4);
+            armRotation.setPower(0.2);
         } else if (gamepad1.dpad_left) {
-            armRotation.setPower(-0.4);
+            armRotation.setPower(-0.2);
         } else {
             armRotation.setPower(0); // immediate stop
         }
 
         // Wrist: X (up), A (down)
         if (gamepad1.x) {
-            wristPos += 0.005;
+            wristPos += 0.0025;
         } else if (gamepad1.a) {
-            wristPos -= 0.005;
+            wristPos -= 0.0025;
         }
         wristPos = Math.max(0, Math.min(1, wristPos));
         wrist.setPosition(wristPos);
 
         // Hand: Y (open), B (close)
         if (gamepad1.y) {
-            handPos -= 0.005;
+            handPos -= 0.0025;
         } else if (gamepad1.b) {
-            handPos += 0.005;
+            handPos += 0.0025;
         }
         handPos = Math.max(0, Math.min(1, handPos));
         hand.setPosition(handPos);

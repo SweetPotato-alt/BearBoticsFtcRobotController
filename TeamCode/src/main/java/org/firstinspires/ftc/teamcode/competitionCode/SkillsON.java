@@ -77,7 +77,7 @@ public class SkillsON extends OpMode {
                 Math.max(Math.abs(bl),
                         Math.max(Math.abs(fr), Math.abs(br))));
 
-        double maxPower = gamepad1.x ? 1.0 : 0.5;
+        double maxPower = (gamepad1.x || gamepad1.right_trigger > 0.5) ? 1.0 : 0.5;
 
         if (max > maxPower) {
             double scale = maxPower / max;
@@ -133,7 +133,7 @@ public class SkillsON extends OpMode {
         }
 
         telemetry.addData("Status", "Running");
-        telemetry.addData("Boost Mode (X)", gamepad1.x ? "ON" : "OFF");
+        telemetry.addData("Boost Mode (X/RT)", (gamepad1.x || gamepad1.right_trigger > 0.5) ? "ON" : "OFF");
         telemetry.addData("Elbow Pos", elbowPos);
         telemetry.addData("Wrist Pos", wristPos);
         telemetry.addData("Hand", handClosed ? "CLOSED" : "OPEN");

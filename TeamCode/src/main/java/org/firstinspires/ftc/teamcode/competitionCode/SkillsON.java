@@ -10,7 +10,6 @@ public class SkillsON extends OpMode {
 
     // Drive motors
     private DcMotor frontLeft, frontRight, backLeft, backRight;
-    
 
     // Arm hardware
     private DcMotor armRotation;
@@ -47,7 +46,6 @@ public class SkillsON extends OpMode {
         // IMPORTANT: switch to manual control mode
         armRotation.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armRotation.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        
 
         // Initial Servo positions
         elbow.setPosition(elbowPos);
@@ -93,24 +91,18 @@ public class SkillsON extends OpMode {
         backRight.setPower(br);
 
         // ===== ARM CONTROLS =====
-        
-        // Elbow: D-pad Up/Down (Servo)
 
         // Elbow: D-pad Up/Down
         if (gamepad1.dpad_up) {
-            elbowPos += 0.0005;
             elbowPos += 0.001;
         } else if (gamepad1.dpad_down) {
-            elbowPos -= 0.0005;
             elbowPos -= 0.001;
         }
         elbowPos = Math.max(0, Math.min(1, elbowPos));
         elbow.setPosition(elbowPos);
 
-        // Arm Rotation: D-pad Left/Right (Motor with Encoder holding)
         // Arm Rotation: HOLD = move, RELEASE = stop instantly
         if (gamepad1.dpad_right) {
-            rotationTarget += 15;
             armRotation.setPower(0.1);
         } else if (gamepad1.dpad_left) {
             armRotation.setPower(-0.1);
@@ -118,14 +110,10 @@ public class SkillsON extends OpMode {
             armRotation.setPower(0); // immediate stop
         }
 
-        // Wrist: Y (Up) and A (Down)
-        if (gamepad1.y) {
-            wristPos += 0.0005;
         // Wrist: X (up), A (down)
         if (gamepad1.x) {
             wristPos += 0.001;
         } else if (gamepad1.a) {
-            wristPos -= 0.0005;
             wristPos -= 0.001;
         }
         wristPos = Math.max(0, Math.min(1, wristPos));
@@ -148,7 +136,6 @@ public class SkillsON extends OpMode {
 >>>>>>> e5e3d1fb172ac95ea94abd44b9920fec9fdcb349
         telemetry.addData("Elbow Pos", elbowPos);
         telemetry.addData("Wrist Pos", wristPos);
-        telemetry.addData("Hand", handClosed ? "CLOSED" : "OPEN");
         telemetry.addData("Arm Power", armRotation.getPower());
         telemetry.update();
     }

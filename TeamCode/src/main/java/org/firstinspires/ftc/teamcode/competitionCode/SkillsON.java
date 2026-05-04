@@ -16,9 +16,9 @@ public class SkillsON extends OpMode {
     private Servo elbow, wrist, hand;
 
     // Servo positions
-    private double elbowPos = 0.5;
-    private double wristPos = 0.5;
-    private double handPos  = 0.8; // Start closed
+    private double elbowPos = 0.0;
+    private double wristPos = 0.0;
+    private double handPos  = 0.7; // Start closed
 
     @Override
     public void init() {
@@ -93,9 +93,9 @@ public class SkillsON extends OpMode {
 
         // Elbow: D-pad Up/Down
         if (gamepad1.dpad_up) {
-            elbowPos += 0.0025;
+            elbowPos -= 0.0015;
         } else if (gamepad1.dpad_down) {
-            elbowPos -= 0.0025;
+            elbowPos += 0.0015;
         }
         elbowPos = Math.max(0, Math.min(1, elbowPos));
         elbow.setPosition(elbowPos);

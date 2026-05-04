@@ -47,11 +47,6 @@ public class SkillsON extends OpMode {
         // IMPORTANT: switch to manual control mode
         armRotation.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armRotation.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Initial Servo positions
-        elbow.setPosition(elbowPos);
-        wrist.setPosition(wristPos);
-        hand.setPosition(handPos);
     }
 
     @Override
@@ -102,9 +97,9 @@ public class SkillsON extends OpMode {
 
         // Arm Rotation: HOLD = move, RELEASE = stop instantly
         if (gamepad1.dpad_right) {
-            armRotation.setPower(0.2);
-        } else if (gamepad1.dpad_left) {
             armRotation.setPower(-0.2);
+        } else if (gamepad1.dpad_left) {
+            armRotation.setPower(0.2);
         } else {
             armRotation.setPower(0); // immediate stop
         }

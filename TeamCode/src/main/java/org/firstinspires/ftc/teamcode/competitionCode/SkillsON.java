@@ -16,8 +16,8 @@ public class SkillsON extends OpMode {
     private Servo elbow, wrist, hand;
 
     // Servo positions
-    private double elbowPos = 0.0;
-    private double wristPos = 0.0;
+    private double elbowPos = 0.4;
+    private double wristPos = 0.4;
     private double handPos  = 0.7; // Start closed
 
     @Override
@@ -102,15 +102,15 @@ public class SkillsON extends OpMode {
 
         // Arm Rotation: HOLD = move, RELEASE = stop instantly
         if (gamepad1.dpad_right) {
-            armRotation.setPower(0.2);
-        } else if (gamepad1.dpad_left) {
             armRotation.setPower(-0.2);
+        } else if (gamepad1.dpad_left) {
+            armRotation.setPower(+0.2);
         } else {
             armRotation.setPower(0); // immediate stop
         }
 
-        // Wrist: X (up), A (down)
-        if (gamepad1.x) {
+        // Wrist: y (up), A (down)
+        if (gamepad1.y) {
             wristPos += 0.0025;
         } else if (gamepad1.a) {
             wristPos -= 0.0025;
@@ -118,8 +118,8 @@ public class SkillsON extends OpMode {
         wristPos = Math.max(0, Math.min(1, wristPos));
         wrist.setPosition(wristPos);
 
-        // Hand: Y (open), B (close)
-        if (gamepad1.y) {
+        // Hand: x (open), B (close)
+        if (gamepad1.x) {
             handPos -= 0.0025;
         } else if (gamepad1.b) {
             handPos += 0.0025;

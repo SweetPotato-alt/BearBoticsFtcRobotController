@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.competitionCode;
+package org.firstinspires.ftc.teamcode.competitionCode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous(name = "RED triangle", group = "Autonomous")
-public class RedSmallTriangle extends LinearOpMode {
+public class SmallTriangle extends LinearOpMode {
 
     // Declare motors
     private DcMotor left = null;

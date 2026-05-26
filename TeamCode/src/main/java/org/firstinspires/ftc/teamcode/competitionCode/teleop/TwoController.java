@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 @TeleOp(name="TwoController", group ="TeleOP")
 public class TwoController extends OpMode {
     DcMotor fleft, fright, rleft, rright, launcher;
-    CRServo feeder;
+    CRServo feeder, plow;
     CRServo leftIndex, rightIndex;
     DistanceSensor distance;
     private Orientation angles;
@@ -52,6 +52,9 @@ public class TwoController extends OpMode {
 
         // Sensors
         distance = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+
+        //Plow
+        plow = hardwareMap.get(CRServo.class, "plow");
     }
 
     @Override
@@ -129,6 +132,14 @@ public class TwoController extends OpMode {
             leftIndex.setPower(0.0);
             rightIndex.setPower(0.0);
         }
+
+        //plow
+        if (gamepad2.x) {
+            plow.setPower(0.5);
+        } else if (gamepad1.b) {
+            plow.setPower(-0.5);
+        }
+
 
         // ============================================================
         // Telemetry

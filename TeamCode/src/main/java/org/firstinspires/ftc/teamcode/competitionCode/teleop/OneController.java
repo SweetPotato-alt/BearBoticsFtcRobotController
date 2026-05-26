@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 @TeleOp(name="OneController", group ="TeleOP")
 public class OneController extends OpMode {
     DcMotor fleft, fright, rleft, rright, launcher;
-    CRServo feeder;
+    CRServo feeder, plow;
     CRServo leftIndex, rightIndex;
     DistanceSensor distance;
     private DistanceSensor distSensor;
@@ -56,6 +56,11 @@ public class OneController extends OpMode {
 
         // Sensors
         distance = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+
+        //Plow
+        plow = hardwareMap.get(CRServo.class, "plow");
+        plow.setPower(0);
+
     }
 
     @Override
@@ -117,10 +122,8 @@ public class OneController extends OpMode {
         }
         aPressedLast = gamepad1.a;
 
-        // --- Feeder (right stick Y) ---
-        float feederInput = -gamepad1.right_stick_y;
-        if (Math.abs(feederInput) < 0.1) feederInput = 0;
-        feeder.setPower(feederInput);
+        // --- Feeder () ---
+
 
         // --- Index (right bumper) ---
         if (gamepad1.right_bumper) {
@@ -130,6 +133,14 @@ public class OneController extends OpMode {
             leftIndex.setPower(0.0);
             rightIndex.setPower(0.0);
         }
+
+        // plow
+        if (gamepad1.x) {
+            plow.setPower(0.5);
+        } else if (gamepad1.b) {
+            plow.setPower(-0.5);
+        }
+
 
         // --- Telemetry ---
         telemetry.addData("FL / FR", "%.2f / %.2f", flPower, frPower);

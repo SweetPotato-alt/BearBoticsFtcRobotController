@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.competitionCode.teleop;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,16 +12,23 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 @TeleOp(name="TwoController", group ="TeleOP")
 public class TwoController extends OpMode {
     DcMotor fleft, fright, rleft, rright, launcher;
-    CRServo feeder, plow;
+    DcMotor plow; // Configured as a DcMotor
+    CRServo feeder;
     CRServo leftIndex, rightIndex;
     DistanceSensor distance;
     private Orientation angles;
     private final double PRECISION_SCALE = 0.3;
+
     boolean parkingMode = false;
     boolean lastParking = false;
     boolean launcherOn = false;
     boolean indexActive = false;
+
+    // Toggle tracking for launcher
     boolean aPressedLast = false;
+
+    // String to keep track of the plow state for telemetry
+    String plowState = "STOPPED";
 
     @Override
     public void init() {
@@ -53,8 +61,11 @@ public class TwoController extends OpMode {
         // Sensors
         distance = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
-        //Plow
-        plow = hardwareMap.get(CRServo.class, "plow");
+        // Plow Motor Config
+        plow = hardwareMap.get(DcMotor.class, "plow");
+        plow.setDirection(DcMotorSimple.Direction.FORWARD);
+        plow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Holds position when stopped
+        plow.setPower(0);
     }
 
     @Override
@@ -109,7 +120,7 @@ public class TwoController extends OpMode {
         rright.setPower(rrPower * 0.9);
 
         // ============================================================
-        // GAMEPAD 2 — All other functions
+        // GAMEPAD 2 — Shooter & Systems
         // ============================================================
 
         // --- Launcher toggle (A button) ---
@@ -128,16 +139,23 @@ public class TwoController extends OpMode {
         if (gamepad2.right_bumper) {
             leftIndex.setPower(-1.0);
             rightIndex.setPower(1.0);
+            indexActive = true;
         } else {
             leftIndex.setPower(0.0);
             rightIndex.setPower(0.0);
+            indexActive = false;
         }
 
-        //plow
+        // --- Plow Controls (X to Open, B to Close) ---
         if (gamepad2.x) {
-            plow.setPower(0.5);
-        } else if (gamepad1.b) {
-            plow.setPower(-0.5);
+            plow.setPower(0.1);  // Positive power to OPEN
+            plowState = "OPENING";
+        } else if (gamepad2.b) {
+            plow.setPower(-0.1); // Negative power to CLOSE
+            plowState = "CLOSING";
+        } else {
+            plow.setPower(0.0);  // Stops moving when no button is pressed
+            plowState = "STOPPED";
         }
 
 
@@ -151,6 +169,7 @@ public class TwoController extends OpMode {
         telemetry.addData("-- Gamepad 2 (Systems) --", "");
         telemetry.addData("Launcher",  launcherOn  ? "ON"       : "OFF");
         telemetry.addData("Index",     indexActive ? "SPINNING" : "STOPPED");
+        telemetry.addData("Plow Motor", plowState);
         telemetry.addData("Distance",  "%.2f cm",  dist);
         telemetry.update();
     }

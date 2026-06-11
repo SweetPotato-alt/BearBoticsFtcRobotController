@@ -5,17 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name="TwoController", group ="TeleOP")
 public class TwoController extends OpMode {
     DcMotor fleft, fright, rleft, rright, launcher;
-    CRServo plow; // Changed from DcMotor to CRServo
-    CRServo feeder;
+    CRServo feeder, plow;
     CRServo leftIndex, rightIndex;
-    DistanceSensor distance;
     private Orientation angles;
     private final double PRECISION_SCALE = 0.3;
 
@@ -39,9 +35,14 @@ public class TwoController extends OpMode {
         rright = hardwareMap.get(DcMotor.class, "rright");
 
         fleft.setDirection(DcMotorSimple.Direction.FORWARD);
-        rleft.setDirection(DcMotorSimple.Direction.FORWARD);
+        rleft.setDirection(DcMotorSimple.Direction.REVERSE);
         fright.setDirection(DcMotorSimple.Direction.REVERSE);
         rright.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        fleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Launcher
         launcher = hardwareMap.get(DcMotor.class, "launcher");
@@ -58,9 +59,6 @@ public class TwoController extends OpMode {
         leftIndex.setPower(0);
         rightIndex.setPower(0);
 
-        // Sensors
-        distance = hardwareMap.get(DistanceSensor.class, "distanceSensor");
-
         // Plow CRServo Config
         plow = hardwareMap.get(CRServo.class, "plow");
         plow.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -69,8 +67,6 @@ public class TwoController extends OpMode {
 
     @Override
     public void loop() {
-        // Sensors
-        double dist = distance.getDistance(DistanceUnit.CM);
 
         // ============================================================
         // GAMEPAD 1 — Driving only
@@ -174,7 +170,6 @@ public class TwoController extends OpMode {
         telemetry.addData("Launcher", launcherOn ? "ON" : "OFF");
         telemetry.addData("Index", indexActive ? "SPINNING" : "STOPPED");
         telemetry.addData("Plow", plowState);
-        telemetry.addData("Distance", "%.2f cm", dist);
 
         telemetry.update();
     }

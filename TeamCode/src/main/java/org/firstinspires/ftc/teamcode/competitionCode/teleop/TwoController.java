@@ -34,13 +34,7 @@ public class TwoController extends OpMode {
         rleft  = hardwareMap.get(DcMotor.class, "rleft");
         rright = hardwareMap.get(DcMotor.class, "rright");
 
-        fleft.setDirection(DcMotorSimple.Direction.FORWARD);
-        rleft.setDirection(DcMotorSimple.Direction.REVERSE);
-        fright.setDirection(DcMotorSimple.Direction.REVERSE);
-        rright.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        fleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fleft.setDirection(DcMotorSimple.Direc
         rleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

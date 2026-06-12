@@ -6,48 +6,41 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "RED triangle", group = "Autonomous")
+@Autonomous(name = "Triangle", group = "Autonomous")
 public class SmallTriangle extends LinearOpMode {
 
     // Declare motors
-    private DcMotor left = null;
-    private DcMotor right = null;
-    private DcMotor launcher = null;
+    DcMotor fleft, fright, rleft, rright;
 
-    // Declare CRServos
-    private CRServo feeder = null;
-    private CRServo leftindex = null;
-    private CRServo rightindex = null;
 
     @Override
     public void runOpMode() {
 
-        //define
-        left = hardwareMap.get(DcMotor.class, "left");
-        right = hardwareMap.get(DcMotor.class, "right");
-        launcher = hardwareMap.get(DcMotor.class, "launcher");
+        fleft  = hardwareMap.get(DcMotor.class, "fleft");
+        fright = hardwareMap.get(DcMotor.class, "fright");
+        rleft  = hardwareMap.get(DcMotor.class, "rleft");
+        rright = hardwareMap.get(DcMotor.class, "rright");
 
-        feeder = hardwareMap.get(CRServo.class, "feeder");
-        leftindex = hardwareMap.get(CRServo.class, "leftindex");
-        rightindex = hardwareMap.get(CRServo.class, "rightindex");
+        fleft.setDirection(DcMotorSimple.Direction.FORWARD);
+        rleft.setDirection(DcMotorSimple.Direction.REVERSE);
+        fright.setDirection(DcMotorSimple.Direction.REVERSE);
+        rright.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //motor define
-        left.setDirection(DcMotorSimple.Direction.FORWARD);
-        right.setDirection(DcMotorSimple.Direction.REVERSE);
-        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
+        fleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        //servo define
-        feeder.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftindex.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightindex.setDirection(DcMotorSimple.Direction.FORWARD);
+        fleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        fright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rright.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         //initial stop
-        left.setPower(0);
-        right.setPower(0);
-        launcher.setPower(0);
-        feeder.setPower(0);
-        leftindex.setPower(0);
-        rightindex.setPower(0);
+        fleft.setPower(0);
+        fright.setPower(0);
+        rleft.setPower(0);
+        rright.setPower(0);
 
         telemetry.addLine("Red Side Small Triangle- Ready; Press start.");
         telemetry.update();
@@ -59,12 +52,16 @@ public class SmallTriangle extends LinearOpMode {
             telemetry.addLine("Backing up - outside of launch zone.");
             telemetry.update();
 
-            left.setPower(0.5);
-            right.setPower(0.5);
+            fleft.setPower(0.5);
+            fright.setPower(0.5);
+            rleft.setPower(0.5);
+            rright.setPower(0.5);
             sleep(500);
 
-            left.setPower(0.0);
-            right.setPower(0.0);
+            fleft.setPower(0);
+            fright.setPower(0);
+            rleft.setPower(0);
+            rright.setPower(0);
 
             telemetry.addLine("Done.");
             telemetry.update();

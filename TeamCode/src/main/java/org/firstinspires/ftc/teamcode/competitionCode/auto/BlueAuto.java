@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name = "RED", group = "Autonomous")
-public class RedAuto extends LinearOpMode {
+@Autonomous(name = "BLUE", group = "Autonomous")
+public class BlueAuto extends LinearOpMode {
 
     // Drive motors
     private DcMotor fleft = null;
@@ -62,7 +62,7 @@ public class RedAuto extends LinearOpMode {
         leftIndex.setPower(0);
         rightIndex.setPower(0);
 
-        telemetry.addLine("Red Side - Ready; Press start.");
+        telemetry.addLine("Blue Side - Ready; Press start.");
         telemetry.update();
 
         waitForStart();
@@ -77,11 +77,10 @@ public class RedAuto extends LinearOpMode {
             telemetry.addLine("Backup to launching position");
             telemetry.update();
 
-            // Matches original code: only right side powered
-            fleft.setPower(0.0);
-            rleft.setPower(0.0);
-            fright.setPower(0.3);
-            rright.setPower(0.3);
+            fleft.setPower(0.3);
+            fright.setPower(0.0);
+            rleft.setPower(0.3);
+            rright.setPower(0.0);
             sleep(250);
 
             fleft.setPower(0.2);
@@ -169,11 +168,11 @@ public class RedAuto extends LinearOpMode {
             telemetry.addLine("Turning...");
             telemetry.update();
 
-            fleft.setPower(0.2);
-            rleft.setPower(0.2);
-            fright.setPower(-0.2);
-            rright.setPower(-0.2);
-            sleep(2000);
+            fleft.setPower(-0.2);
+            rleft.setPower(-0.2);
+            fright.setPower(0.2);
+            rright.setPower(0.2);
+            sleep(1400);
 
             // Backup
             telemetry.addLine("Backing up...");
